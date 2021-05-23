@@ -1,6 +1,6 @@
 import React from "react";
 
-import "../sass/pages/Homepage.scss";
+import "./Homepage.scss";
 
 const HomePage = ({ children }) => {
     return (
