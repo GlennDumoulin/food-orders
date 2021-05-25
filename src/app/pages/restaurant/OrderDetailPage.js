@@ -1,7 +1,9 @@
+// Imports
 import React from "react";
 
 import "./OrderDetailPage.scss";
 
+// Page content
 export const OrderDetailPage = ({ children }) => {
     return (
         <div className="page page--order-detail">

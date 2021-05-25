@@ -1,7 +1,9 @@
+// Imports
 import React from "react";
 
 import "./ResetPasswordPage.scss";
 
+// Page content
 export const ResetPasswordPage = ({ children }) => {
     return (
         <div className="page page--reset-password">

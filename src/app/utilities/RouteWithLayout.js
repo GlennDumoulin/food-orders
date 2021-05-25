@@ -1,3 +1,4 @@
+// Custom Route component so you can also give it a layout
 import React from "react";
 import { Route as ReactRoute } from "react-router";
 

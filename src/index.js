@@ -1,3 +1,4 @@
+// Imports
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./app";
@@ -7,6 +8,7 @@ import "jquery/dist/jquery.slim.min";
 import "@popperjs/core";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
+// App container
 ReactDOM.render(
     <React.StrictMode>
         <App />

@@ -1,7 +1,9 @@
+// Imports
 import React from "react";
 
 import "./ManageSizesPage.scss";
 
+// Page content
 export const ManageSizesPage = ({ children }) => {
     return (
         <div className="page page--manage-sizes">

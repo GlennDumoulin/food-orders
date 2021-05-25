@@ -11,7 +11,7 @@ import * as Routes from "./routes";
 
 import "./App.scss";
 
-// App container with a Router + Firebase, Firestore and Auth Providers
+// Firebase, Firestore and Auth Providers + App Router
 function App() {
     return (
         <div className="app">
@@ -20,7 +20,7 @@ function App() {
                     <FirestoreProvider>
                         <Router>
                             <Switch>
-                                {/* General Pages */}
+                                {/* General pages */}
                                 <RouteWithLayout
                                     exact
                                     path={Routes.LANDING}
@@ -56,7 +56,7 @@ function App() {
                                     component={Pages.MyAccountPage}
                                 />
 
-                                {/* User Pages */}
+                                {/* User pages */}
                                 <RouteWithLayout
                                     exact
                                     path={Routes.MY_ORDERS}
@@ -82,7 +82,7 @@ function App() {
                                     component={Pages.RestaurantMenuPage}
                                 />
 
-                                {/* Restaurant Pages */}
+                                {/* Restaurant pages */}
                                 <RouteWithLayout
                                     exact
                                     path={Routes.ORDERS}
@@ -120,7 +120,7 @@ function App() {
                                     component={Pages.DishDetailPage}
                                 />
 
-                                {/* Admin Pages */}
+                                {/* Admin pages */}
                                 <RouteWithLayout
                                     exact
                                     path={Routes.MANAGE_RESTAURANTS}
@@ -134,7 +134,7 @@ function App() {
                                     component={Pages.ManageDishesPage}
                                 />
 
-                                {/* Not Found Page */}
+                                {/* Not Found page */}
                                 <RouteWithLayout
                                     layout={BaseLayout}
                                     component={Pages.NotFoundPage}

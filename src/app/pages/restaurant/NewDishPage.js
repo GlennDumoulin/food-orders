@@ -1,7 +1,9 @@
+// Imports
 import React from "react";
 
 import "./NewDishPage.scss";
 
+// Page content
 export const NewDishPage = () => {
     return (
         <div className="page page--new-dish">

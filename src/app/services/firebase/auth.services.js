@@ -1,22 +1,25 @@
+// Imports
 import React, { useContext, useState, useEffect } from "react";
 import "firebase/auth";
 
 import { useFirebase } from "./firebase.services";
 
+// Create Context for Authentication
 const AuthContext = React.createContext(null);
 const useAuth = () => useContext(AuthContext);
 
+// Create Provider for Authentication
 const AuthProvider = ({ children }) => {
     const { app } = useFirebase();
     const auth = app.auth();
 
     const [user, setUser] = useState(null);
 
-    // login
+    // Login
     const login = (email, password) =>
         auth.signInWithEmailAndPassword(email, password);
 
-    // register/signup
+    // Register/Signup
     const signup = (name, email, password) => {
         return auth
             .createUserWithEmailAndPassword(email, password)
@@ -27,7 +30,7 @@ const AuthProvider = ({ children }) => {
             });
     };
 
-    // logout
+    // Logout
     const logout = () => auth.signOut();
 
     useEffect(() => {
