@@ -1,5 +1,6 @@
 // Imports
 import React, { useContext, useState, useEffect } from "react";
+import firebase from "firebase/app";
 import "firebase/auth";
 
 import { useFirebase } from "./firebase.services";
@@ -10,16 +11,28 @@ const useAuth = () => useContext(AuthContext);
 
 // Create Provider for Authentication
 const AuthProvider = ({ children }) => {
+    // Define variables and states
     const { app } = useFirebase();
     const auth = app.auth();
 
     const [user, setUser] = useState(null);
 
-    // Login
+    /**
+     * Log the current user in
+     * @param {String} email
+     * @param {String} password
+     * @returns null|error
+     */
     const login = (email, password) =>
         auth.signInWithEmailAndPassword(email, password);
 
-    // Register/Signup
+    /**
+     * Register/Signup the current user
+     * @param {String} name
+     * @param {String} email
+     * @param {String} password
+     * @returns return null|error
+     */
     const signup = (name, email, password) => {
         return auth
             .createUserWithEmailAndPassword(email, password)
@@ -30,9 +43,26 @@ const AuthProvider = ({ children }) => {
             });
     };
 
-    // Logout
+    // Log the current user out
     const logout = () => auth.signOut();
 
+    /**
+     * Re-authenticate the user
+     * @param {string} password
+     * @returns null|error
+     */
+    const reauthenticate = (password) => {
+        const credential = firebase.auth.EmailAuthProvider.credential(
+            user.email,
+            password
+        );
+        return user.reauthenticateWithCredential(credential).then(() => {
+            // User re-authenticated.
+            return null;
+        });
+    };
+
+    // Set a global user variable if user is signed in
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged((user) => {
             if (user) {
@@ -49,6 +79,7 @@ const AuthProvider = ({ children }) => {
         login,
         logout,
         signup,
+        reauthenticate,
     };
 
     return (
