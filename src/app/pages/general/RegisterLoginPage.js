@@ -11,10 +11,7 @@ import "./RegisterLoginPage.scss";
 
 // Defining the validation schemas for the forms
 const userSignupValidationSchema = Yup.object().shape({
-    name: Yup.string()
-        .required("Name is required")
-        .min(1, "Name is too short")
-        .label("name"),
+    name: Yup.string().required("Name is required").label("name"),
     email: Yup.string()
         .required("Email is required")
         .email("Enter a valid email")
@@ -33,10 +30,14 @@ const userSignupValidationSchema = Yup.object().shape({
 });
 
 const restaurantSignupValidationSchema = Yup.object().shape({
-    name: Yup.string()
-        .required("Name is required")
-        .min(1, "Name is too short")
-        .label("name"),
+    name: Yup.string().required("Name is required").label("name"),
+    companyNumber: Yup.string()
+        .required("Company number is required")
+        .matches(
+            /^([0-1]{1})([0-9]{3}).([0-9]{3}.([0-9]{3}))$/,
+            "Enter a valid company number"
+        )
+        .label("companyNumber"),
     email: Yup.string()
         .required("Email is required")
         .email("Enter a valid email")
@@ -52,6 +53,16 @@ const restaurantSignupValidationSchema = Yup.object().shape({
         .required("Confirm password is required")
         .oneOf([Yup.ref("password"), null], "Passwords must match")
         .label("confirmPassword"),
+    address: Yup.string().required("Address is required").label("address"),
+    city: Yup.string().required("City is required").label("city"),
+    postalCode: Yup.number()
+        .required("Postal code is required")
+        .min(1000, "Enter a valid postal code")
+        .max(9999, "Enter a valid postal code")
+        .label("postalCode"),
+    thumbnail: Yup.string()
+        .required("Uploading your logo is required")
+        .label("thumbnail"),
 });
 
 // Page content
@@ -299,6 +310,7 @@ export const RegisterLoginPage = ({ children }) => {
                 <Formik
                     initialValues={{
                         name: "",
+                        companyNumber: "",
                         email: "",
                         password: "",
                         confirmPassword: "",
@@ -325,6 +337,27 @@ export const RegisterLoginPage = ({ children }) => {
                                     />
                                     <ErrorMessage
                                         name="name"
+                                        component="span"
+                                        className="error"
+                                    />
+                                </div>
+                                <div className="form-item">
+                                    <label htmlFor="companyNumber">
+                                        Company number
+                                    </label>
+                                    <Field
+                                        type="text"
+                                        name="companyNumber"
+                                        id="companyNumber"
+                                        className={
+                                            errors.companyNumber &&
+                                            touched.companyNumber
+                                                ? "input-error"
+                                                : "input-success"
+                                        }
+                                    />
+                                    <ErrorMessage
+                                        name="companyNumber"
                                         component="span"
                                         className="error"
                                     />
