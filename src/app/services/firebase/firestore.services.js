@@ -34,8 +34,50 @@ const FirestoreProvider = ({ children }) => {
             });
     };
 
+    /**
+     * Add restaurant to Firestore
+     * @param {String} name
+     * @param {String} companyNumber
+     * @param {String} email
+     * @param {String} address
+     * @param {String} city
+     * @param {Number} postalCode
+     * @param {URL} thumbnailUrl
+     * @returns null|error
+     */
+    const addRestaurant = async (
+        name,
+        companyNumber,
+        email,
+        address,
+        city,
+        postalCode,
+        thumbnailUrl
+    ) => {
+        return db
+            .collection("restaurants")
+            .add({
+                restaurantName: name,
+                companyNumber: companyNumber,
+                email: email,
+                address: address,
+                city: city,
+                postalCode: postalCode,
+                thumbnailUrl: thumbnailUrl,
+                acceptingOrders: false,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    const value = {
+        addUser,
+        addRestaurant,
+    };
+
     return (
-        <FirestoreContext.Provider value={{ addUser }}>
+        <FirestoreContext.Provider value={value}>
             {children}
         </FirestoreContext.Provider>
     );

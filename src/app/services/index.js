@@ -8,6 +8,9 @@ import {
     FirestoreContext,
     FirestoreProvider,
     useFirestore,
+    StorageContext,
+    StorageProvider,
+    useStorage,
 } from "./firebase";
 
 export {
@@ -20,4 +23,7 @@ export {
     FirestoreContext,
     FirestoreProvider,
     useFirestore,
+    StorageContext,
+    StorageProvider,
+    useStorage,
 };

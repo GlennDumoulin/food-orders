@@ -4,13 +4,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import * as Feather from "react-feather";
 
+import { Thumbnail } from "../../components/forms";
+
 import * as Routes from "../../routes";
-import { useAuth, useFirestore } from "../../services";
+import { useAuth, useFirestore, useStorage } from "../../services";
 
 import "./RegisterLoginPage.scss";
 
 // Defining variables for file uploads
-const FILE_SIZE = 160 * 1024;
+const FILE_SIZE = 2 * 1024 * 1024;
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
 // Defining the validation schemas for the forms
@@ -39,7 +41,7 @@ const restSignupValidationSchema = Yup.object().shape({
         .required("Company number is required")
         .matches(
             /^([0-1]{1})([0-9]{3}).([0-9]{3}.([0-9]{3}))$/,
-            "Enter a valid company number"
+            "Use this format: 0123.321.123"
         )
         .label("companyNumber"),
     email: Yup.string()
@@ -73,14 +75,14 @@ const restSignupValidationSchema = Yup.object().shape({
     thumbnail: Yup.mixed()
         .required("Logo is required")
         .test(
-            "fileSize",
-            "File too large",
-            (value) => value && value.size <= FILE_SIZE
-        )
-        .test(
             "fileFormat",
             "Unsupported Format",
             (value) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
+        .test(
+            "fileSize",
+            "File too large: max size is 2MB",
+            (value) => value && value.size <= FILE_SIZE
         )
         .label("thumbnail"),
 });
@@ -89,7 +91,8 @@ const restSignupValidationSchema = Yup.object().shape({
 export const RegisterLoginPage = ({ children }) => {
     // Define variables and states
     const { signup } = useAuth();
-    const { addUser } = useFirestore();
+    const { addUser, addRestaurant } = useFirestore();
+    const { uploadLogo } = useStorage();
 
     const [type, setType] = useState("user");
     const [error, setError] = useState("");
@@ -136,23 +139,31 @@ export const RegisterLoginPage = ({ children }) => {
         thumbnail,
     }) => {
         try {
-            console.log(
-                `${name} | ${companyNumber} | ${email} | ${password} | ${address} | ${city} | ${postalCode} | ${thumbnail}`
-            );
             // Registrate the restaurant using Firebase authentication
-            // await signup(name, email, password);
+            await signup(name, email, password);
+
+            // Add logo to Cloud Storage
+            const thumbnailUrl = await uploadLogo(thumbnail, name);
 
             // Add restaurant to Firestore
-            // await addRestaurant(name, companyNumber, email, address, city, postalCode, thumbnail);
+            await addRestaurant(
+                name,
+                companyNumber,
+                email,
+                address,
+                city,
+                postalCode,
+                thumbnailUrl
+            );
 
-            // Redirect to Home page
-            // window.location.assign(Routes.ORDERS);
+            // Redirect to Orders page
+            window.location.assign(Routes.ORDERS);
         } catch (error) {
             setError(error.message);
         }
     };
 
-    // Handle password Visible functions
+    // Handle password visibility functions
     const handleUserSignupPwVisibility = () => {
         setUserSignupPwVisible(!userSignupPwVisible);
     };
@@ -172,424 +183,444 @@ export const RegisterLoginPage = ({ children }) => {
     return (
         <div className="page page--register-login">
             <h1>Register/Login</h1>
-            <label htmlFor="type">I want to register as...</label>
-            <select
-                name="type"
-                onChange={(ev) => {
-                    setType(ev.target.value);
-                    setUserSignupPwVisible(false);
-                    setUserSignupConfPwVisible(false);
-                    setRestSignupPwVisible(false);
-                    setRestSignupConfPwVisible(false);
-                }}
-                value={type}
-            >
-                <option value="user">User</option>
-                <option value="restaurant">Restaurant</option>
-            </select>
-            <div className="divider"></div>
-            {/* Show the signup form based on select value */}
-            {type === "user" && (
-                <Formik
-                    initialValues={{
-                        name: "",
-                        email: "",
-                        password: "",
-                        confirmPassword: "",
+            <div className="register">
+                <label htmlFor="type">I want to register as...</label>
+                <select
+                    name="type"
+                    onChange={(ev) => {
+                        setType(ev.target.value);
+                        setUserSignupPwVisible(false);
+                        setUserSignupConfPwVisible(false);
+                        setRestSignupPwVisible(false);
+                        setRestSignupConfPwVisible(false);
                     }}
-                    onSubmit={handleUserSignup}
-                    validationSchema={userSignupValidationSchema}
+                    value={type}
                 >
-                    {(formik) => {
-                        const { errors, touched, isValid, dirty } = formik;
-                        return (
-                            <Form>
-                                <span className="error">{error}</span>
-                                <div className="form-item">
-                                    <label htmlFor="name">Name</label>
-                                    <Field
-                                        type="text"
-                                        name="name"
-                                        id="name"
+                    <option value="user">User</option>
+                    <option value="restaurant">Restaurant</option>
+                </select>
+                <div className="divider"></div>
+                {/* Show the signup form based on select value */}
+                {type === "user" && (
+                    <Formik
+                        initialValues={{
+                            name: "",
+                            email: "",
+                            password: "",
+                            confirmPassword: "",
+                        }}
+                        onSubmit={handleUserSignup}
+                        validationSchema={userSignupValidationSchema}
+                    >
+                        {(formik) => {
+                            const { errors, touched, isValid, dirty } = formik;
+                            return (
+                                <Form className="register-user">
+                                    <span className="error">{error}</span>
+                                    <div className="form-item">
+                                        <label htmlFor="name">Name</label>
+                                        <Field
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            className={
+                                                errors.name && touched.name
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="name"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="email">Email</label>
+                                        <Field
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            className={
+                                                errors.email && touched.email
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="email"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="password">
+                                            Password
+                                        </label>
+                                        <Field
+                                            type={
+                                                userSignupPwVisible
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            name="password"
+                                            id="password"
+                                            className={
+                                                errors.password &&
+                                                touched.password
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <i
+                                            className="password-visibility"
+                                            onClick={
+                                                handleUserSignupPwVisibility
+                                            }
+                                        >
+                                            {userSignupPwVisible ? (
+                                                <Feather.EyeOff />
+                                            ) : (
+                                                <Feather.Eye />
+                                            )}
+                                        </i>
+                                        <ErrorMessage
+                                            name="password"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="confirmPassword">
+                                            Confirm password
+                                        </label>
+                                        <Field
+                                            type={
+                                                userSignupConfPwVisible
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            name="confirmPassword"
+                                            id="confirmPassword"
+                                            className={
+                                                errors.confirmPassword &&
+                                                touched.confirmPassword
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <i
+                                            className="password-visibility"
+                                            onClick={
+                                                handleUserSignupConfPwVisibility
+                                            }
+                                        >
+                                            {userSignupConfPwVisible ? (
+                                                <Feather.EyeOff />
+                                            ) : (
+                                                <Feather.Eye />
+                                            )}
+                                        </i>
+                                        <ErrorMessage
+                                            name="confirmPassword"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
                                         className={
-                                            errors.name && touched.name
-                                                ? "input-error"
-                                                : "input-success"
+                                            !(dirty && isValid)
+                                                ? "disabled-btn"
+                                                : ""
                                         }
-                                    />
-                                    <ErrorMessage
-                                        name="name"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="email">Email</label>
-                                    <Field
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        className={
-                                            errors.email && touched.email
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="email"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="password">Password</label>
-                                    <Field
-                                        type={
-                                            userSignupPwVisible
-                                                ? "text"
-                                                : "password"
-                                        }
-                                        name="password"
-                                        id="password"
-                                        className={
-                                            errors.password && touched.password
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <i
-                                        className="password-visibility"
-                                        onClick={handleUserSignupPwVisibility}
+                                        disabled={!(dirty && isValid)}
                                     >
-                                        {userSignupPwVisible ? (
-                                            <Feather.EyeOff />
-                                        ) : (
-                                            <Feather.Eye />
-                                        )}
-                                    </i>
-                                    <ErrorMessage
-                                        name="password"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="confirmPassword">
-                                        Confirm password
-                                    </label>
-                                    <Field
-                                        type={
-                                            userSignupConfPwVisible
-                                                ? "text"
-                                                : "password"
-                                        }
-                                        name="confirmPassword"
-                                        id="confirmPassword"
+                                        Register as user
+                                    </button>
+                                </Form>
+                            );
+                        }}
+                    </Formik>
+                )}
+                {type === "restaurant" && (
+                    <Formik
+                        initialValues={{
+                            name: "",
+                            companyNumber: "",
+                            email: "",
+                            password: "",
+                            confirmPassword: "",
+                            address: "",
+                            city: "",
+                            postalCode: 0,
+                            thumbnail: "",
+                        }}
+                        onSubmit={handleRestaurantSignup}
+                        validationSchema={restSignupValidationSchema}
+                    >
+                        {(formik) => {
+                            const {
+                                values,
+                                errors,
+                                touched,
+                                isValid,
+                                dirty,
+                                setFieldValue,
+                                setFieldTouched,
+                            } = formik;
+                            return (
+                                <Form className="register-restaurant">
+                                    <span className="error">{error}</span>
+                                    <div className="form-item">
+                                        <label htmlFor="name">Name</label>
+                                        <Field
+                                            type="text"
+                                            name="name"
+                                            id="name"
+                                            className={
+                                                errors.name && touched.name
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="name"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="companyNumber">
+                                            Company number
+                                        </label>
+                                        <Field
+                                            type="text"
+                                            name="companyNumber"
+                                            id="companyNumber"
+                                            className={
+                                                errors.companyNumber &&
+                                                touched.companyNumber
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="companyNumber"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="email">Email</label>
+                                        <Field
+                                            type="email"
+                                            name="email"
+                                            id="email"
+                                            className={
+                                                errors.email && touched.email
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="email"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="password">
+                                            Password
+                                        </label>
+                                        <Field
+                                            type={
+                                                restSignupPwVisible
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            name="password"
+                                            id="password"
+                                            className={
+                                                errors.password &&
+                                                touched.password
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <i
+                                            className="password-visibility"
+                                            onClick={
+                                                handleRestSignupPwVisibility
+                                            }
+                                        >
+                                            {restSignupPwVisible ? (
+                                                <Feather.EyeOff />
+                                            ) : (
+                                                <Feather.Eye />
+                                            )}
+                                        </i>
+                                        <ErrorMessage
+                                            name="password"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="confirmPassword">
+                                            Confirm password
+                                        </label>
+                                        <Field
+                                            type={
+                                                restSignupConfPwVisible
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            name="confirmPassword"
+                                            id="confirmPassword"
+                                            className={
+                                                errors.confirmPassword &&
+                                                touched.confirmPassword
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <i
+                                            className="password-visibility"
+                                            onClick={
+                                                handleRestSignupConfPwVisibility
+                                            }
+                                        >
+                                            {restSignupConfPwVisible ? (
+                                                <Feather.EyeOff />
+                                            ) : (
+                                                <Feather.Eye />
+                                            )}
+                                        </i>
+                                        <ErrorMessage
+                                            name="confirmPassword"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="address">Address</label>
+                                        <Field
+                                            type="text"
+                                            name="address"
+                                            id="address"
+                                            className={
+                                                errors.address &&
+                                                touched.address
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="address"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="city">City</label>
+                                        <Field
+                                            type="text"
+                                            name="city"
+                                            id="city"
+                                            className={
+                                                errors.city && touched.city
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="city"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="postalCode">
+                                            Postal code
+                                        </label>
+                                        <Field
+                                            type="number"
+                                            name="postalCode"
+                                            id="postalCode"
+                                            className={
+                                                errors.postalCode &&
+                                                touched.postalCode
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                        />
+                                        <ErrorMessage
+                                            name="postalCode"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <div className="form-item">
+                                        <label htmlFor="thumbnail">
+                                            Upload your logo
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            name="thumbnail"
+                                            id="thumbnail"
+                                            className={
+                                                errors.thumbnail &&
+                                                touched.thumbnail
+                                                    ? "input-error"
+                                                    : "input-success"
+                                            }
+                                            onClick={() =>
+                                                setFieldTouched(
+                                                    "thumbnail",
+                                                    true,
+                                                    true
+                                                )
+                                            }
+                                            onChange={(ev) => {
+                                                setFieldValue(
+                                                    "thumbnail",
+                                                    ev.currentTarget.files[0]
+                                                );
+                                            }}
+                                        />
+                                        {values.thumbnail &&
+                                            !errors.thumbnail &&
+                                            touched.thumbnail && (
+                                                <Thumbnail
+                                                    thumbnail={values.thumbnail}
+                                                />
+                                            )}
+                                        <ErrorMessage
+                                            name="thumbnail"
+                                            component="span"
+                                            className="error"
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
                                         className={
-                                            errors.confirmPassword &&
-                                            touched.confirmPassword
-                                                ? "input-error"
-                                                : "input-success"
+                                            !(dirty && isValid)
+                                                ? "disabled-btn"
+                                                : ""
                                         }
-                                    />
-                                    <i
-                                        className="password-visibility"
-                                        onClick={
-                                            handleUserSignupConfPwVisibility
-                                        }
+                                        disabled={!(dirty && isValid)}
                                     >
-                                        {userSignupConfPwVisible ? (
-                                            <Feather.EyeOff />
-                                        ) : (
-                                            <Feather.Eye />
-                                        )}
-                                    </i>
-                                    <ErrorMessage
-                                        name="confirmPassword"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className={
-                                        !(dirty && isValid)
-                                            ? "disabled-btn"
-                                            : ""
-                                    }
-                                    disabled={!(dirty && isValid)}
-                                >
-                                    Register as user
-                                </button>
-                            </Form>
-                        );
-                    }}
-                </Formik>
-            )}
-            {type === "restaurant" && (
-                <Formik
-                    initialValues={{
-                        name: "",
-                        companyNumber: "",
-                        email: "",
-                        password: "",
-                        confirmPassword: "",
-                        address: "",
-                        city: "",
-                        postalCode: 0,
-                        thumbnail: "",
-                    }}
-                    onSubmit={handleRestaurantSignup}
-                    validationSchema={restSignupValidationSchema}
-                >
-                    {(formik) => {
-                        const {
-                            values,
-                            errors,
-                            touched,
-                            isValid,
-                            dirty,
-                            setFieldValue,
-                        } = formik;
-                        return (
-                            <Form>
-                                <span className="error">{error}</span>
-                                <div className="form-item">
-                                    <label htmlFor="name">Name</label>
-                                    <Field
-                                        type="text"
-                                        name="name"
-                                        id="name"
-                                        className={
-                                            errors.name && touched.name
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="name"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="companyNumber">
-                                        Company number
-                                    </label>
-                                    <Field
-                                        type="text"
-                                        name="companyNumber"
-                                        id="companyNumber"
-                                        className={
-                                            errors.companyNumber &&
-                                            touched.companyNumber
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="companyNumber"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="email">Email</label>
-                                    <Field
-                                        type="email"
-                                        name="email"
-                                        id="email"
-                                        className={
-                                            errors.email && touched.email
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="email"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="password">Password</label>
-                                    <Field
-                                        type={
-                                            restSignupPwVisible
-                                                ? "text"
-                                                : "password"
-                                        }
-                                        name="password"
-                                        id="password"
-                                        className={
-                                            errors.password && touched.password
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <i
-                                        className="password-visibility"
-                                        onClick={handleRestSignupPwVisibility}
-                                    >
-                                        {restSignupPwVisible ? (
-                                            <Feather.EyeOff />
-                                        ) : (
-                                            <Feather.Eye />
-                                        )}
-                                    </i>
-                                    <ErrorMessage
-                                        name="password"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="confirmPassword">
-                                        Confirm password
-                                    </label>
-                                    <Field
-                                        type={
-                                            restSignupConfPwVisible
-                                                ? "text"
-                                                : "password"
-                                        }
-                                        name="confirmPassword"
-                                        id="confirmPassword"
-                                        className={
-                                            errors.confirmPassword &&
-                                            touched.confirmPassword
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <i
-                                        className="password-visibility"
-                                        onClick={
-                                            handleRestSignupConfPwVisibility
-                                        }
-                                    >
-                                        {restSignupConfPwVisible ? (
-                                            <Feather.EyeOff />
-                                        ) : (
-                                            <Feather.Eye />
-                                        )}
-                                    </i>
-                                    <ErrorMessage
-                                        name="confirmPassword"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="address">Address</label>
-                                    <Field
-                                        type="text"
-                                        name="address"
-                                        id="address"
-                                        className={
-                                            errors.address && touched.address
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="address"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="city">City</label>
-                                    <Field
-                                        type="text"
-                                        name="city"
-                                        id="city"
-                                        className={
-                                            errors.city && touched.city
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="city"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="postalCode">
-                                        Postal code
-                                    </label>
-                                    <Field
-                                        type="number"
-                                        name="postalCode"
-                                        id="postalCode"
-                                        className={
-                                            errors.postalCode &&
-                                            touched.postalCode
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                    />
-                                    <ErrorMessage
-                                        name="postalCode"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <div className="form-item">
-                                    <label htmlFor="thumbnail">
-                                        Upload your logo
-                                    </label>
-                                    <Field
-                                        type="file"
-                                        accept="image/*"
-                                        name="thumbnail"
-                                        id="thumbnail"
-                                        className={
-                                            errors.thumbnail &&
-                                            touched.thumbnail
-                                                ? "input-error"
-                                                : "input-success"
-                                        }
-                                        onChange={(ev) => {
-                                            console.log(ev.target.files[0]);
-                                            setFieldValue(
-                                                "thumbnail",
-                                                ev.target.files[0]
-                                            );
-                                        }}
-                                    />
-                                    {values.thumbnail &&
-                                        !errors.thumbnail &&
-                                        touched.thumbnail && (
-                                            <img
-                                                src={values.file}
-                                                alt={values.file.name}
-                                            />
-                                        )}
-                                    <ErrorMessage
-                                        name="thumbnail"
-                                        component="span"
-                                        className="error"
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className={
-                                        !(dirty && isValid)
-                                            ? "disabled-btn"
-                                            : ""
-                                    }
-                                    disabled={!(dirty && isValid)}
-                                >
-                                    Register as restaurant
-                                </button>
-                            </Form>
-                        );
-                    }}
-                </Formik>
-            )}
+                                        Register as restaurant
+                                    </button>
+                                </Form>
+                            );
+                        }}
+                    </Formik>
+                )}
+            </div>
+            <div className="login"></div>
         </div>
     );
 };
