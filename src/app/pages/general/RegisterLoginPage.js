@@ -1,7 +1,11 @@
 // Imports
 import React, { useState } from "react";
 
-import { UserSignupForm, RestSignupForm } from "../../components/forms";
+import {
+    UserSignupForm,
+    RestSignupForm,
+    LoginForm,
+} from "../../components/forms";
 
 import "./RegisterLoginPage.scss";
 
@@ -30,7 +34,9 @@ export const RegisterLoginPage = ({ children }) => {
                 {type === "user" && <UserSignupForm />}
                 {type === "restaurant" && <RestSignupForm />}
             </div>
-            <div className="login"></div>
+            <div className="login">
+                <LoginForm />
+            </div>
         </div>
     );
 };

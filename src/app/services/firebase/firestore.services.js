@@ -71,9 +71,48 @@ const FirestoreProvider = ({ children }) => {
             });
     };
 
+    /**
+     * Get the type of a person based on the email
+     * @param {String} email
+     * @returns string|null
+     */
+    const getTypeByEmail = async (email) => {
+        // Get users by email
+        const userQuery = db
+            .collection("users")
+            .where("email", "==", email)
+            .where("isAdmin", "==", false);
+        const userQuerySnapshot = await userQuery.get();
+
+        // Get admin by email
+        const adminQuery = db
+            .collection("users")
+            .where("email", "==", email)
+            .where("isAdmin", "==", true);
+        const adminQuerySnapshot = await adminQuery.get();
+
+        // Get restaurants by email
+        const restQuery = db
+            .collection("restaurants")
+            .where("email", "==", email);
+        const restQuerySnapshot = await restQuery.get();
+
+        // Return type or null
+        if (userQuerySnapshot?.docs.length > 0) {
+            return "user";
+        } else if (adminQuerySnapshot?.docs.length > 0) {
+            return "admin";
+        } else if (restQuerySnapshot?.docs.length > 0) {
+            return "restaurant";
+        } else {
+            return null;
+        }
+    };
+
     const value = {
         addUser,
         addRestaurant,
+        getTypeByEmail,
     };
 
     return (

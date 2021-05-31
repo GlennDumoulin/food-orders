@@ -154,14 +154,14 @@ const RestSignupForm = ({ children }) => {
                     setFieldTouched,
                 } = formik;
                 return (
-                    <Form className="register-restaurant">
+                    <Form className="register-form--restaurant">
                         <span className="error">{error}</span>
                         <div className="form-item">
                             <label htmlFor="name">Name</label>
                             <Field
                                 type="text"
                                 name="name"
-                                id="name"
+                                id="register-name"
                                 className={
                                     errors.name && touched.name
                                         ? "input-error"
@@ -181,7 +181,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type="text"
                                 name="companyNumber"
-                                id="companyNumber"
+                                id="register-companyNumber"
                                 className={
                                     errors.companyNumber &&
                                     touched.companyNumber
@@ -200,7 +200,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type="email"
                                 name="email"
-                                id="email"
+                                id="register-email"
                                 className={
                                     errors.email && touched.email
                                         ? "input-error"
@@ -218,7 +218,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type={pwVisible ? "text" : "password"}
                                 name="password"
-                                id="password"
+                                id="register-password"
                                 className={
                                     errors.password && touched.password
                                         ? "input-error"
@@ -248,7 +248,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type={confPwVisible ? "text" : "password"}
                                 name="confirmPassword"
-                                id="confirmPassword"
+                                id="register-confirmPassword"
                                 className={
                                     errors.confirmPassword &&
                                     touched.confirmPassword
@@ -277,7 +277,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type="text"
                                 name="address"
-                                id="address"
+                                id="register-address"
                                 className={
                                     errors.address && touched.address
                                         ? "input-error"
@@ -295,7 +295,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type="text"
                                 name="city"
-                                id="city"
+                                id="register-city"
                                 className={
                                     errors.city && touched.city
                                         ? "input-error"
@@ -313,7 +313,7 @@ const RestSignupForm = ({ children }) => {
                             <Field
                                 type="number"
                                 name="postalCode"
-                                id="postalCode"
+                                id="register-postalCode"
                                 className={
                                     errors.postalCode && touched.postalCode
                                         ? "input-error"
@@ -332,7 +332,7 @@ const RestSignupForm = ({ children }) => {
                                 type="file"
                                 accept="image/*"
                                 name="thumbnail"
-                                id="thumbnail"
+                                id="register-thumbnail"
                                 className={
                                     errors.thumbnail && touched.thumbnail
                                         ? "input-error"

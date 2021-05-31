@@ -82,14 +82,14 @@ const UserSignupForm = ({ children }) => {
             {(formik) => {
                 const { errors, touched, isValid, dirty } = formik;
                 return (
-                    <Form className="register-user">
+                    <Form className="register-form--user">
                         <span className="error">{error}</span>
                         <div className="form-item">
                             <label htmlFor="name">Name</label>
                             <Field
                                 type="text"
                                 name="name"
-                                id="name"
+                                id="register-name"
                                 className={
                                     errors.name && touched.name
                                         ? "input-error"
@@ -107,7 +107,7 @@ const UserSignupForm = ({ children }) => {
                             <Field
                                 type="email"
                                 name="email"
-                                id="email"
+                                id="register-email"
                                 className={
                                     errors.email && touched.email
                                         ? "input-error"
@@ -125,7 +125,7 @@ const UserSignupForm = ({ children }) => {
                             <Field
                                 type={pwVisible ? "text" : "password"}
                                 name="password"
-                                id="password"
+                                id="register-password"
                                 className={
                                     errors.password && touched.password
                                         ? "input-error"
@@ -155,7 +155,7 @@ const UserSignupForm = ({ children }) => {
                             <Field
                                 type={confPwVisible ? "text" : "password"}
                                 name="confirmPassword"
-                                id="confirmPassword"
+                                id="register-confirmPassword"
                                 className={
                                     errors.confirmPassword &&
                                     touched.confirmPassword
