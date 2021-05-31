@@ -1,3 +1,5 @@
 import Thumbnail from "./Thumbnail";
+import UserSignupForm from "./UserSignupForm";
+import RestSignupForm from "./RestSignupForm";
 
-export { Thumbnail };
+export { Thumbnail, UserSignupForm, RestSignupForm };

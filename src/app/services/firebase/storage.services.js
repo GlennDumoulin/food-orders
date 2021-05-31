@@ -15,23 +15,23 @@ const StorageProvider = ({ children }) => {
     const storage = app.storage();
 
     /**
-     * Upload an image to logos folder
+     * Upload an image to Cloud Storage
      * @param {Object} file
      * @returns download url for uploaded image
      */
-    const uploadLogo = async (file, restaurantName) => {
+    const uploadImg = async (folder, subfolder, file) => {
         const storageRef = storage.ref();
         const fileRef = storageRef.child(
-            `logos/${restaurantName.replace(" ", "_")}/${file.name}`
+            `${folder}/${subfolder.replace(" ", "_")}/${file.name}`
         );
 
-        await fileRef.put(file.name);
+        await fileRef.put(file);
 
         return await fileRef.getDownloadURL();
     };
 
     const value = {
-        uploadLogo,
+        uploadImg,
     };
 
     return (
