@@ -5,7 +5,6 @@ import App from "./app";
 import reportWebVitals from "./reportWebVitals";
 
 import "jquery/dist/jquery.slim.min";
-import "@popperjs/core";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
 // App container

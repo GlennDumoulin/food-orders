@@ -97,7 +97,7 @@ const FirestoreProvider = ({ children }) => {
             .where("email", "==", email);
         const restQuerySnapshot = await restQuery.get();
 
-        // Return type or null
+        // Return type
         if (userQuerySnapshot?.docs.length > 0) {
             return "user";
         } else if (adminQuerySnapshot?.docs.length > 0) {
@@ -105,7 +105,7 @@ const FirestoreProvider = ({ children }) => {
         } else if (restQuerySnapshot?.docs.length > 0) {
             return "restaurant";
         } else {
-            return null;
+            return "logged_out";
         }
     };
 

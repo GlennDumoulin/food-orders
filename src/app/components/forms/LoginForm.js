@@ -43,8 +43,9 @@ const LoginForm = ({ children }) => {
             // Get the type of person logging in
             const type = await getTypeByEmail(email);
 
-            // Redirect to Home or Orders page depending on type
-            if (type && type === "user") window.location.assign(Routes.HOME);
+            // Redirect depending on type
+            if (type && type === "user")
+                window.location.assign(Routes.MY_OVERVIEW);
             if (type && type === "admin")
                 window.location.assign(Routes.MANAGE_RESTAURANTS);
             if (type && type === "restaurant")

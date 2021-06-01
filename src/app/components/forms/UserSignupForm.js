@@ -53,7 +53,7 @@ const UserSignupForm = ({ children }) => {
             await addUser(name, email);
 
             // Redirect to Home page
-            window.location.assign(Routes.HOME);
+            window.location.assign(Routes.MY_OVERVIEW);
         } catch (error) {
             setError(error.message);
         }

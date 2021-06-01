@@ -1,12 +1,11 @@
-// General pages
+// Logged Out pages
 export const LANDING = "/";
-export const HOME = "/home";
 export const REGISTER_LOGIN = "/register-login";
 export const FORGOT_PASSWORD = "/forgot-password";
 export const RESET_PASSWORD = "/reset-password";
-export const MY_ACCOUNT = "/my-account";
 
 // User pages
+export const MY_OVERVIEW = "/my-overview";
 export const MY_ORDERS = "/my-orders";
 export const MY_ORDER_DETAIL = "/my-orders/:id";
 export const RESTAURANTS = "/restaurants";
@@ -23,3 +22,7 @@ export const DISH_DETAIL = "/our-menu/:id";
 // Admin pages
 export const MANAGE_RESTAURANTS = "/manage-restaurants";
 export const MANAGE_DISHES = "/manage-dishes";
+
+// General pages
+export const HOME = "/home";
+export const MY_ACCOUNT = "/my-account";

@@ -1,15 +1,14 @@
-// General Pages
+// Logged Out Pages
 import {
     HomePage,
-    NotFoundPage,
     RegisterLoginPage,
     ForgotPasswordPage,
     ResetPasswordPage,
-    MyAccountPage,
-} from "./general";
+} from "./loggedOut";
 
 // User Pages
 import {
+    MyOverviewPage,
     MyOrdersPage,
     MyOrderDetailPage,
     RestaurantsPage,
@@ -29,13 +28,15 @@ import {
 // Admin Pages
 import { ManageRestaurantsPage, ManageDishesPage } from "./admin";
 
+// General Pages
+import { MyAccountPage, NotFoundPage } from "./general";
+
 export {
     HomePage,
-    NotFoundPage,
     RegisterLoginPage,
     ForgotPasswordPage,
     ResetPasswordPage,
-    MyAccountPage,
+    MyOverviewPage,
     MyOrdersPage,
     MyOrderDetailPage,
     RestaurantsPage,
@@ -48,4 +49,6 @@ export {
     DishDetailPage,
     ManageRestaurantsPage,
     ManageDishesPage,
+    MyAccountPage,
+    NotFoundPage,
 };
