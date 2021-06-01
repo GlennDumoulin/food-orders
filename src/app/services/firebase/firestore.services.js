@@ -72,12 +72,12 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Get the type of a person based on the email
+     * Get the type of the user based on the email
      * @param {String} email
      * @returns string|null
      */
     const getTypeByEmail = async (email) => {
-        // Get users by email
+        // Get user by email
         const userQuery = db
             .collection("users")
             .where("email", "==", email)
@@ -91,7 +91,7 @@ const FirestoreProvider = ({ children }) => {
             .where("isAdmin", "==", true);
         const adminQuerySnapshot = await adminQuery.get();
 
-        // Get restaurants by email
+        // Get restaurant by email
         const restQuery = db
             .collection("restaurants")
             .where("email", "==", email);

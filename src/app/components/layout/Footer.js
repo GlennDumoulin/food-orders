@@ -28,7 +28,7 @@ const Footer = ({ children }) => {
     });
 
     return (
-        <footer className="app-footer">
+        <footer className="app-footer" style={{ marginTop: "auto" }}>
             <div className="footer-content">
                 <h1 className="footer-brand">
                     {type === "logged_out" && (

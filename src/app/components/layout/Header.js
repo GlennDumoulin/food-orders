@@ -36,8 +36,8 @@ const Header = ({ children }) => {
     };
 
     return (
-        <header className="app-header">
-            <nav className="navbar navbar-expand-md">
+        <header className="app-header fixed-top">
+            <nav className="navbar navbar-expand-md container">
                 <h1 className="navbar-brand">
                     {type === "logged_out" && (
                         <Link
@@ -46,7 +46,7 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br />
+                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -57,7 +57,7 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br />
+                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -68,7 +68,7 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br />
+                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -79,7 +79,7 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br />
+                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
