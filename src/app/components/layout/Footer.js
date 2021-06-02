@@ -28,8 +28,8 @@ const Footer = ({ children }) => {
     });
 
     return (
-        <footer className="app-footer" style={{ marginTop: "auto" }}>
-            <div className="footer-content">
+        <footer className="app-footer">
+            <div className="footer-content container">
                 <h1 className="footer-brand">
                     {type === "logged_out" && (
                         <Link to={Routes.HOME} className="brand">

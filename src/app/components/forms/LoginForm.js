@@ -122,9 +122,7 @@ const LoginForm = ({ children }) => {
                         </div>
                         <button
                             type="submit"
-                            className={
-                                !(dirty && isValid) ? "disabled-btn" : ""
-                            }
+                            className={!(dirty && isValid) ? "disabled" : ""}
                             disabled={!(dirty && isValid)}
                         >
                             Login

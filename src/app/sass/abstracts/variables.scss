@@ -1,0 +1,25 @@
+// Colors
+$color-primary: #feb510;
+$color-primary--hover: #ffb169;
+$color-secundary: #0f59ff;
+$color-secundary--hover: #89abf6;
+$color-confirm: #00bf4b;
+$color-confirm--hover: #4bf68e;
+$color-danger: #f3043a;
+$color-danger--hover: #ff7292;
+$color-white: #fff;
+$color-black: #000;
+$color-black--40: rgba(0, 0, 0, 0.4);
+$color-black--60: rgba(0, 0, 0, 0.6);
+$color-disabled: #e7dcab;
+
+// Fonts
+$font-family-montserrat: "Montserrat", sans-serif;
+$font-family-roboto: "Roboto", sans-serif;
+
+// Transitions
+$transition-standard: all 0.3s ease-in-out;
+
+// Grid
+$grid-columns: 12;
+$grid-gutter-width: 1.5rem;

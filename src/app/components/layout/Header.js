@@ -36,7 +36,13 @@ const Header = ({ children }) => {
     };
 
     return (
-        <header className="app-header fixed-top">
+        <header
+            className={
+                showNav
+                    ? "app-header navbar-open fixed-top"
+                    : "app-header fixed-top"
+            }
+        >
             <nav className="navbar navbar-expand-md container">
                 <h1 className="navbar-brand">
                     {type === "logged_out" && (
@@ -46,7 +52,6 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -57,7 +62,6 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -68,7 +72,6 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -79,7 +82,6 @@ const Header = ({ children }) => {
                             onClick={closeNavbar}
                         >
                             <span>F</span>ood
-                            <br className="d-none d-md-block" />
                             <span>O</span>rders
                         </Link>
                     )}
@@ -90,7 +92,7 @@ const Header = ({ children }) => {
                     onClick={() => setShowNav(!showNav)}
                 >
                     <span className="navbar-toggler-icon">
-                        <Feather.Menu />
+                        {showNav ? <Feather.X /> : <Feather.Menu />}
                     </span>
                 </button>
 
@@ -105,7 +107,7 @@ const Header = ({ children }) => {
                         <ul className="navbar-nav mr-auto justify-content-end flex-grow-1">
                             <li className="nav-item">
                                 <NavLink
-                                    to={Routes.LANDING}
+                                    to={Routes.HOME}
                                     className="nav-link"
                                     activeClassName="active"
                                     onClick={closeNavbar}

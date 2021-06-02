@@ -7,7 +7,7 @@ import { Header, Footer } from "../components/layout";
 const BaseLayout = ({ children }) => (
     <Fragment>
         <Header />
-        <main className="app-main">{children}</main>
+        <main className="app-main container ">{children}</main>
         <Footer />
     </Fragment>
 );

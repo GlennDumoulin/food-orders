@@ -15,14 +15,7 @@ import "./App.scss";
 // Firebase, Firestore and Auth Providers + App Router
 function App() {
     return (
-        <div
-            className="app"
-            style={{
-                minHeight: "100vh",
-                display: "flex",
-                flexDirection: "column",
-            }}
-        >
+        <div className="app">
             <FirebaseProvider>
                 <AuthProvider>
                     <FirestoreProvider>
