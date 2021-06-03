@@ -40,7 +40,25 @@ a,
 li,
 span {
     color: $color-black;
+    font-size: 1.125rem;
     margin-bottom: 0;
+    @media (min-width: 768px) {
+        font-size: 1.25rem;
+    }
+}
+
+.card {
+    & p,
+    & a,
+    & li,
+    & span {
+        color: $color-black;
+        font-size: 1rem;
+        margin-bottom: 0;
+        @media (min-width: 768px) {
+            font-size: 1.125rem;
+        }
+    }
 }
 
 a {
@@ -75,6 +93,9 @@ button {
     transition: $transition-standard;
     &:hover {
         background-color: $color-primary--hover;
+    }
+    &[type="submit"] {
+        margin-top: 30px;
     }
     &.disabled {
         background-color: $color-disabled;
@@ -115,9 +136,6 @@ button {
     }
     &.fill {
         width: 100%;
-    }
-    &[type="submit"] {
-        margin-top: 30px;
     }
 }
 
@@ -211,9 +229,24 @@ form {
     text-decoration: none;
     & span {
         color: $color-secundary;
+        font-size: 1.75rem;
     }
     &:hover {
         color: $color-black;
+    }
+}
+
+.back-btn {
+    position: absolute;
+    top: 80px;
+    & .btn-icon {
+        width: 30px;
+        height: 30px;
+        transition: $transition-standard;
+        &:hover {
+            color: $color-secundary;
+            cursor: pointer;
+        }
     }
 }
 

@@ -16,6 +16,7 @@ const FirestoreProvider = ({ children }) => {
 
     /**
      * Add user to Firestore
+     * @param {Id} id
      * @param {String} name
      * @param {String} email
      * @returns null|error
@@ -37,6 +38,7 @@ const FirestoreProvider = ({ children }) => {
 
     /**
      * Add restaurant to Firestore
+     * @param {Id} id
      * @param {String} name
      * @param {String} companyNumber
      * @param {String} email
@@ -72,6 +74,20 @@ const FirestoreProvider = ({ children }) => {
             .then((docRef) => {
                 return null;
             });
+    };
+
+    /**
+     * Get all sizes from a restaurant
+     * @param {Id} restaurantId
+     * @returns querysnapshot|error
+     */
+    const getSizesByRestaurant = async (restaurantId) => {
+        const query = db
+            .collection("sizes")
+            .where("restaurantId", "==", restaurantId);
+        const querySnapshot = await query.get();
+
+        if (querySnapshot?.docs) return querySnapshot.docs;
     };
 
     /**
@@ -115,6 +131,7 @@ const FirestoreProvider = ({ children }) => {
     const value = {
         addUser,
         addRestaurant,
+        getSizesByRestaurant,
         getTypeByEmail,
     };
 

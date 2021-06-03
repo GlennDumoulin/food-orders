@@ -1,2 +1,8 @@
 .page--our-menu {
+    & .btns-container {
+        margin-bottom: 10px;
+        &--item {
+            margin-bottom: 10px;
+        }
+    }
 }
