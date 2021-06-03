@@ -20,9 +20,10 @@ const StorageProvider = ({ children }) => {
      * @returns download url for uploaded image
      */
     const uploadImg = async (folder, subfolder, file) => {
+        const searchRegExp = new RegExp(" ", "g");
         const storageRef = storage.ref();
         const fileRef = storageRef.child(
-            `${folder}/${subfolder.replace(" ", "_")}/${file.name}`
+            `${folder}/${subfolder.replace(searchRegExp, "_")}/${file.name}`
         );
 
         await fileRef.put(file);

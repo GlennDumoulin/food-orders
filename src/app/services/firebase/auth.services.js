@@ -40,6 +40,7 @@ const AuthProvider = ({ children }) => {
                 response.user.updateProfile({
                     displayName: name,
                 });
+                return response.user;
             });
     };
 

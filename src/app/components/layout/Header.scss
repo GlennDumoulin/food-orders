@@ -41,6 +41,8 @@
                     font-size: 1rem;
                     color: $color-black;
                     width: fit-content;
+                    padding-left: 0 !important;
+                    padding-right: 0 !important;
                     transition: $transition-standard;
                     &:hover {
                         color: $color-secundary;
@@ -52,17 +54,16 @@
                 }
                 @media (min-width: 768px) {
                     &-item {
-                        margin-left: 0.5rem;
+                        margin-left: 1rem;
                         margin-right: 0;
                     }
                     &-link {
                         font-size: 1rem;
-                        padding: 0;
                     }
                 }
                 @media (min-width: 992px) {
                     &-item {
-                        margin-left: 0.75rem;
+                        margin-left: 1.75rem;
                     }
                     &-link {
                         font-size: 1.25rem;

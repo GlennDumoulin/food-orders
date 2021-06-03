@@ -95,13 +95,14 @@ const RestSignupForm = ({ children }) => {
     }) => {
         try {
             // Registrate the restaurant using Firebase authentication
-            await signup(name, email, password);
+            const user = await signup(name, email, password);
 
             // Add logo to Cloud Storage
             const thumbnailUrl = await uploadImg("logos", name, thumbnail);
 
             // Add restaurant to Firestore
             await addRestaurant(
+                user.uid,
                 name,
                 companyNumber,
                 email,

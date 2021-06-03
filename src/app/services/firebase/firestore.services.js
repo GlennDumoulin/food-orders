@@ -20,10 +20,11 @@ const FirestoreProvider = ({ children }) => {
      * @param {String} email
      * @returns null|error
      */
-    const addUser = async (name, email) => {
+    const addUser = async (id, name, email) => {
         return db
             .collection("users")
-            .add({
+            .doc(id)
+            .set({
                 name: name,
                 email: email,
                 linkedAlexaEmail: "",
@@ -46,6 +47,7 @@ const FirestoreProvider = ({ children }) => {
      * @returns null|error
      */
     const addRestaurant = async (
+        id,
         name,
         companyNumber,
         email,
@@ -56,7 +58,8 @@ const FirestoreProvider = ({ children }) => {
     ) => {
         return db
             .collection("restaurants")
-            .add({
+            .doc(id)
+            .set({
                 restaurantName: name,
                 companyNumber: companyNumber,
                 email: email,

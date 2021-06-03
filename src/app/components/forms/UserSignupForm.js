@@ -47,10 +47,10 @@ const UserSignupForm = ({ children }) => {
     const handleUserSignup = async ({ name, email, password }) => {
         try {
             // Registrate the user using Firebase authentication
-            await signup(name, email, password);
+            const user = await signup(name, email, password);
 
             // Add user to Firestore
-            await addUser(name, email);
+            await addUser(user.uid, name, email);
 
             // Redirect to Home page
             window.location.assign(Routes.MY_OVERVIEW);
