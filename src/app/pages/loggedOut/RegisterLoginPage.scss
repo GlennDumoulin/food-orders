@@ -1,2 +1,35 @@
+@import "../../App.scss";
+
 .page--register-login {
+    & .register-login-selector {
+        margin-bottom: 20px;
+    }
+    & .register,
+    .login {
+        display: none;
+        &.show {
+            display: block;
+        }
+        @media (min-width: 768px) {
+            display: block;
+            border: 2px solid $color-black;
+            border-radius: 10px;
+            & .form-title {
+                padding: 10px 20px;
+                border-bottom: 2px solid $color-black;
+            }
+            & .register-type-selector {
+                padding: 20px 20px 0;
+            }
+            & .divider {
+                margin: 20px;
+                margin-bottom: 0;
+            }
+            & .register-form--user,
+            .register-form--restaurant,
+            .login-form {
+                padding: 20px;
+            }
+        }
+    }
 }

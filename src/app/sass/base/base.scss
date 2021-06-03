@@ -11,7 +11,8 @@ body {
 h1,
 h2,
 h3,
-h4 {
+h4,
+h5 {
     color: $color-black;
     font-family: $font-family-montserrat;
     font-weight: 700;
@@ -30,6 +31,9 @@ h3 {
 h4 {
     font-size: 1.25rem;
 }
+h5 {
+    font-size: 1rem;
+}
 
 p,
 a,
@@ -37,14 +41,21 @@ li,
 span {
     color: $color-black;
     margin-bottom: 0;
-    &.highlight {
-        color: $color-secundary;
-    }
 }
 
 a {
     transition: $transition-standard;
     &:hover {
+        color: $color-secundary;
+    }
+}
+
+h5,
+p,
+a,
+li,
+span {
+    &.highlight {
         color: $color-secundary;
     }
 }
@@ -81,13 +92,110 @@ button {
             background-color: $color-danger--hover;
         }
     }
+    &.switch {
+        width: 50%;
+        background-color: $color-white;
+        border: 2px solid $color-primary;
+        transition: $transition-standard;
+        &:hover {
+            background-color: $color-disabled;
+        }
+        &.left {
+            border-radius: 10px 0 0 10px;
+        }
+        &.right {
+            border-radius: 0 10px 10px 0;
+        }
+        &.active {
+            background-color: $color-primary;
+            &:hover {
+                background-color: $color-primary--hover;
+            }
+        }
+    }
     &.fill {
         width: 100%;
+    }
+    &[type="submit"] {
+        margin-top: 30px;
+    }
+}
+
+input,
+select {
+    width: 100%;
+    border: 1px solid $color-primary;
+    border-radius: 10px;
+    padding: 7px 20px;
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+form {
+    & .form {
+        &-group {
+            margin-bottom: 10px;
+        }
+        &-item {
+            position: relative;
+            margin-bottom: 10px;
+            & label {
+                font-size: 1.125rem;
+                margin: 0;
+                padding: 0;
+            }
+            & input {
+                &.input {
+                    &-error {
+                        border-color: $color-danger;
+                    }
+                    &-success {
+                        border-color: $color-confirm;
+                    }
+                }
+            }
+            & .thumbnail-preview {
+                width: 80px;
+                height: 80px;
+                border: 1px solid $color-primary;
+                border-radius: 10px;
+                &.error {
+                    border-color: $color-danger;
+                }
+                &.success {
+                    border-color: $color-confirm;
+                }
+                & img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+            & i {
+                &.password-visibility {
+                    position: absolute;
+                    top: 32px;
+                    right: 10px;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
+    & span {
+        &.error {
+            display: block;
+            color: $color-danger;
+        }
     }
 }
 
 .app {
-    width: 100vw;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -107,6 +215,12 @@ button {
     &:hover {
         color: $color-black;
     }
+}
+
+.divider {
+    height: 2px;
+    background-color: $color-disabled;
+    margin: 20px 0;
 }
 
 .hidden {

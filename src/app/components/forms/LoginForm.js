@@ -17,7 +17,7 @@ const loginValidationSchema = Yup.object().shape({
         .label("email"),
     password: Yup.string()
         .required("Password is required")
-        .min(8)
+        .min(8, "Password must be at least 8 characters")
         .label("password"),
 });
 
@@ -81,9 +81,11 @@ const LoginForm = ({ children }) => {
                                 name="email"
                                 id="login-email"
                                 className={
-                                    errors.email && touched.email
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.email
+                                        ? errors.email
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -99,9 +101,11 @@ const LoginForm = ({ children }) => {
                                 name="password"
                                 id="login-password"
                                 className={
-                                    errors.password && touched.password
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.password
+                                        ? errors.password
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <i
@@ -119,10 +123,15 @@ const LoginForm = ({ children }) => {
                                 component="span"
                                 className="error"
                             />
+                            <a href={Routes.FORGOT_PASSWORD}>
+                                Forgot password?
+                            </a>
                         </div>
                         <button
                             type="submit"
-                            className={!(dirty && isValid) ? "disabled" : ""}
+                            className={
+                                !(dirty && isValid) ? "fill disabled" : "fill"
+                            }
                             disabled={!(dirty && isValid)}
                         >
                             Login

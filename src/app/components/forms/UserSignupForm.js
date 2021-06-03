@@ -91,9 +91,11 @@ const UserSignupForm = ({ children }) => {
                                 name="name"
                                 id="register-name"
                                 className={
-                                    errors.name && touched.name
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.name
+                                        ? errors.name
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -109,9 +111,11 @@ const UserSignupForm = ({ children }) => {
                                 name="email"
                                 id="register-email"
                                 className={
-                                    errors.email && touched.email
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.email
+                                        ? errors.email
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -127,9 +131,11 @@ const UserSignupForm = ({ children }) => {
                                 name="password"
                                 id="register-password"
                                 className={
-                                    errors.password && touched.password
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.password
+                                        ? errors.password
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <i
@@ -157,10 +163,11 @@ const UserSignupForm = ({ children }) => {
                                 name="confirmPassword"
                                 id="register-confirmPassword"
                                 className={
-                                    errors.confirmPassword &&
                                     touched.confirmPassword
-                                        ? "input-error"
-                                        : "input-success"
+                                        ? errors.confirmPassword
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <i
@@ -181,7 +188,9 @@ const UserSignupForm = ({ children }) => {
                         </div>
                         <button
                             type="submit"
-                            className={!(dirty && isValid) ? "disabled" : ""}
+                            className={
+                                !(dirty && isValid) ? "fill disabled" : "fill"
+                            }
                             disabled={!(dirty && isValid)}
                         >
                             Register as user

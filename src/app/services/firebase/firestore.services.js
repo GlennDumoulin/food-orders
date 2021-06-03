@@ -41,8 +41,8 @@ const FirestoreProvider = ({ children }) => {
      * @param {String} companyNumber
      * @param {String} email
      * @param {String} address
-     * @param {String} city
      * @param {Number} postalCode
+     * @param {String} city
      * @param {URL} thumbnailUrl
      * @returns null|error
      */
@@ -52,8 +52,8 @@ const FirestoreProvider = ({ children }) => {
         companyNumber,
         email,
         address,
-        city,
         postalCode,
+        city,
         thumbnailUrl
     ) => {
         return db
@@ -64,8 +64,8 @@ const FirestoreProvider = ({ children }) => {
                 companyNumber: companyNumber,
                 email: email,
                 address: address,
-                city: city,
                 postalCode: postalCode,
+                city: city,
                 thumbnailUrl: thumbnailUrl,
                 acceptingOrders: false,
             })

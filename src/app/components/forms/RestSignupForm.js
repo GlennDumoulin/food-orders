@@ -47,12 +47,12 @@ const restSignupValidationSchema = Yup.object().shape({
             "Address must contain the number"
         )
         .label("address"),
-    city: Yup.string().required("City is required").label("city"),
     postalCode: Yup.number()
         .required("Postal code is required")
         .min(1000, "Enter a valid postal code")
         .max(9999, "Enter a valid postal code")
         .label("postalCode"),
+    city: Yup.string().required("City is required").label("city"),
     thumbnail: Yup.mixed()
         .required("Logo is required")
         .test(
@@ -89,8 +89,8 @@ const RestSignupForm = ({ children }) => {
         email,
         password,
         address,
-        city,
         postalCode,
+        city,
         thumbnail,
     }) => {
         try {
@@ -107,8 +107,8 @@ const RestSignupForm = ({ children }) => {
                 companyNumber,
                 email,
                 address,
-                city,
                 postalCode,
+                city,
                 thumbnailUrl
             );
 
@@ -137,8 +137,8 @@ const RestSignupForm = ({ children }) => {
                 password: "",
                 confirmPassword: "",
                 address: "",
-                city: "",
                 postalCode: 0,
+                city: "",
                 thumbnail: "",
             }}
             onSubmit={handleRestaurantSignup}
@@ -164,9 +164,11 @@ const RestSignupForm = ({ children }) => {
                                 name="name"
                                 id="register-name"
                                 className={
-                                    errors.name && touched.name
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.name
+                                        ? errors.name
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -184,10 +186,11 @@ const RestSignupForm = ({ children }) => {
                                 name="companyNumber"
                                 id="register-companyNumber"
                                 className={
-                                    errors.companyNumber &&
                                     touched.companyNumber
-                                        ? "input-error"
-                                        : "input-success"
+                                        ? errors.companyNumber
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -203,9 +206,11 @@ const RestSignupForm = ({ children }) => {
                                 name="email"
                                 id="register-email"
                                 className={
-                                    errors.email && touched.email
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.email
+                                        ? errors.email
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -221,9 +226,11 @@ const RestSignupForm = ({ children }) => {
                                 name="password"
                                 id="register-password"
                                 className={
-                                    errors.password && touched.password
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.password
+                                        ? errors.password
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <i
@@ -251,10 +258,11 @@ const RestSignupForm = ({ children }) => {
                                 name="confirmPassword"
                                 id="register-confirmPassword"
                                 className={
-                                    errors.confirmPassword &&
                                     touched.confirmPassword
-                                        ? "input-error"
-                                        : "input-success"
+                                        ? errors.confirmPassword
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <i
@@ -280,9 +288,11 @@ const RestSignupForm = ({ children }) => {
                                 name="address"
                                 id="register-address"
                                 className={
-                                    errors.address && touched.address
-                                        ? "input-error"
-                                        : "input-success"
+                                    touched.address
+                                        ? errors.address
+                                            ? "input-error"
+                                            : "input-success"
+                                        : ""
                                 }
                             />
                             <ErrorMessage
@@ -291,78 +301,113 @@ const RestSignupForm = ({ children }) => {
                                 className="error"
                             />
                         </div>
-                        <div className="form-item">
-                            <label htmlFor="city">City</label>
-                            <Field
-                                type="text"
-                                name="city"
-                                id="register-city"
-                                className={
-                                    errors.city && touched.city
-                                        ? "input-error"
-                                        : "input-success"
-                                }
-                            />
-                            <ErrorMessage
-                                name="city"
-                                component="span"
-                                className="error"
-                            />
+                        <div className="form-group row">
+                            <div className="form-item col-12 col-md-5">
+                                <label htmlFor="postalCode">Postal code</label>
+                                <Field
+                                    type="number"
+                                    name="postalCode"
+                                    id="register-postalCode"
+                                    className={
+                                        touched.postalCode
+                                            ? errors.postalCode
+                                                ? "input-error"
+                                                : "input-success"
+                                            : ""
+                                    }
+                                />
+                                <ErrorMessage
+                                    name="postalCode"
+                                    component="span"
+                                    className="error"
+                                />
+                            </div>
+                            <div className="form-item col-12 col-md-7">
+                                <label htmlFor="city">City</label>
+                                <Field
+                                    type="text"
+                                    name="city"
+                                    id="register-city"
+                                    className={
+                                        touched.city
+                                            ? errors.city
+                                                ? "input-error"
+                                                : "input-success"
+                                            : ""
+                                    }
+                                />
+                                <ErrorMessage
+                                    name="city"
+                                    component="span"
+                                    className="error"
+                                />
+                            </div>
                         </div>
-                        <div className="form-item">
-                            <label htmlFor="postalCode">Postal code</label>
-                            <Field
-                                type="number"
-                                name="postalCode"
-                                id="register-postalCode"
-                                className={
-                                    errors.postalCode && touched.postalCode
-                                        ? "input-error"
-                                        : "input-success"
-                                }
-                            />
-                            <ErrorMessage
-                                name="postalCode"
-                                component="span"
-                                className="error"
-                            />
-                        </div>
-                        <div className="form-item">
-                            <label htmlFor="thumbnail">Upload your logo</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                name="thumbnail"
-                                id="register-thumbnail"
-                                className={
-                                    errors.thumbnail && touched.thumbnail
-                                        ? "input-error"
-                                        : "input-success"
-                                }
-                                onClick={() =>
-                                    setFieldTouched("thumbnail", true, true)
-                                }
-                                onChange={(ev) => {
-                                    setFieldValue(
-                                        "thumbnail",
-                                        ev.currentTarget.files[0]
-                                    );
-                                }}
-                            />
-                            {values.thumbnail &&
-                                !errors.thumbnail &&
-                                touched.thumbnail && (
-                                    <Thumbnail thumbnail={values.thumbnail} />
-                                )}
-                            <ErrorMessage
-                                name="thumbnail"
-                                component="span"
-                                className="error"
-                            />
+                        <div className="form-item d-flex justify-content-between">
+                            <div className="d-flex flex-column justify-content-between">
+                                <label htmlFor="thumbnail">
+                                    Upload your logo
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="thumbnail"
+                                    id="register-thumbnail"
+                                    className="hidden"
+                                    onClick={() =>
+                                        setFieldTouched("thumbnail", true, true)
+                                    }
+                                    onChange={(ev) => {
+                                        setFieldValue(
+                                            "thumbnail",
+                                            ev.currentTarget.files[0]
+                                        );
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    className="d-block"
+                                    onClick={() => {
+                                        document
+                                            .getElementById(
+                                                "register-thumbnail"
+                                            )
+                                            .click();
+                                    }}
+                                >
+                                    Browse files
+                                </button>
+                            </div>
+                            <div className="d-flex flex-column align-items-end">
+                                <div
+                                    className={
+                                        touched.thumbnail
+                                            ? errors.thumbnail
+                                                ? "thumbnail-preview error"
+                                                : "thumbnail-preview success"
+                                            : "thumbnail-preview"
+                                    }
+                                >
+                                    {values.thumbnail &&
+                                        !errors.thumbnail &&
+                                        touched.thumbnail && (
+                                            <Thumbnail
+                                                thumbnail={values.thumbnail}
+                                            />
+                                        )}
+                                </div>
+                                <ErrorMessage
+                                    name="thumbnail"
+                                    component="span"
+                                    className="error"
+                                />
+                            </div>
                         </div>
                         <button
                             type="submit"
-                            className={!(dirty && isValid) ? "disabled" : ""}
+                            className={
+                                !(dirty && isValid) ? "fill disabled" : "fill"
+                            }
                             disabled={!(dirty && isValid)}
                         >
                             Register as restaurant
