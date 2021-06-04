@@ -1,0 +1,28 @@
+@import "../../App.scss";
+
+.sizes-list--item {
+    border: 2px solid $color-primary;
+    border-right: none;
+    border-radius: 10px;
+    height: 50px;
+    margin-bottom: 10px;
+    & h3 {
+        margin: 0;
+        margin-left: 20px;
+    }
+    & .card {
+        &-title {
+            margin-bottom: 0.5rem;
+            margin-left: 0;
+        }
+    }
+    & .manage-size-container {
+        margin-top: -2px;
+        & .edit-size {
+            border-radius: 0;
+        }
+        & .delete-size {
+            border-radius: 0 10px 10px 0;
+        }
+    }
+}

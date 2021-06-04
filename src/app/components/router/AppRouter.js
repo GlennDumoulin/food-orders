@@ -2,11 +2,10 @@
 import React from "react";
 import { BrowserRouter as Router, Redirect, Switch } from "react-router-dom";
 
-import { RouteWithLayout } from "../../utilities";
 import { BaseLayout } from "../../layouts";
-
 import * as Pages from "../../pages";
 import * as Routes from "../../routes";
+import { RouteWithLayout } from "../../utilities";
 
 // App Router
 const AppRouter = () => {

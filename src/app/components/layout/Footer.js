@@ -2,9 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import { useAuth, useFirestore } from "../../services";
-
 import * as Routes from "../../routes";
+import { useAuth, useFirestore } from "../../services";
 
 import "./Footer.scss";
 

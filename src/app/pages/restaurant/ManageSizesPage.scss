@@ -1,5 +1,18 @@
+@import "../../App.scss";
+
 .page--manage-sizes {
     & .sizes-list {
         margin-top: 20px;
+    }
+    & .save-btn {
+        margin-top: 30px;
+    }
+    & span {
+        &.success {
+            color: $color-confirm;
+        }
+        &.error {
+            color: $color-danger;
+        }
     }
 }

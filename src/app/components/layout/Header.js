@@ -3,9 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import * as Feather from "react-feather";
 
-import { useAuth, useFirestore } from "../../services";
-
 import * as Routes from "../../routes";
+import { useAuth, useFirestore } from "../../services";
 
 import "./Header.scss";
 

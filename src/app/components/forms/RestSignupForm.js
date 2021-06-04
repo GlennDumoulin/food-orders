@@ -5,7 +5,6 @@ import * as Yup from "yup";
 import * as Feather from "react-feather";
 
 import { Thumbnail } from "../../components/forms";
-
 import * as Routes from "../../routes";
 import { useAuth, useFirestore, useStorage } from "../../services";
 

@@ -84,10 +84,92 @@ const FirestoreProvider = ({ children }) => {
     const getSizesByRestaurant = async (restaurantId) => {
         const query = db
             .collection("sizes")
-            .where("restaurantId", "==", restaurantId);
+            .where("restaurantId", "==", restaurantId)
+            .orderBy("order");
         const querySnapshot = await query.get();
+        const sizes = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return sizes;
+    };
 
-        if (querySnapshot?.docs) return querySnapshot.docs;
+    /**
+     * Add size to Firestore
+     * @param {String} name
+     * @param {Id} restaurantId
+     * @returns null|error
+     */
+    const addSize = async (name, restaurantId) => {
+        const currentSizes = await getSizesByRestaurant(restaurantId);
+        const amountOfSizes = currentSizes.length;
+        let nextOrderNr = 0;
+        if (currentSizes.length > 0) {
+            nextOrderNr = currentSizes[amountOfSizes - 1].order + 1;
+        }
+
+        return db
+            .collection("sizes")
+            .add({
+                name: name,
+                order: nextOrderNr,
+                restaurantId: restaurantId,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Update the order of a size in Firestore
+     * @param {Object} size
+     * @param {Number} index
+     * @returns null|error
+     */
+    const updateSizeOrder = async (size, index) => {
+        const sizeRef = db.collection("sizes").doc(size.id);
+
+        return sizeRef
+            .update({
+                order: index,
+            })
+            .then((docref) => {
+                return null;
+            });
+    };
+
+    /**
+     * Update the name of a size in Firestore
+     * @param {Id} id
+     * @param {String} name
+     * @param {Number} index
+     * @returns null|error
+     */
+    const updateSizeName = async (id, name) => {
+        const sizeRef = db.collection("sizes").doc(id);
+
+        return sizeRef
+            .update({
+                name: name,
+            })
+            .then((docref) => {
+                return null;
+            });
+    };
+
+    /**
+     * Delete a size from Firestore
+     * @param {Id} id
+     * @returns null|error
+     */
+    const deleteSize = async (id) => {
+        const sizeRef = db.collection("sizes").doc(id);
+
+        return sizeRef.delete().then((docRef) => {
+            return null;
+        });
     };
 
     /**
@@ -132,6 +214,10 @@ const FirestoreProvider = ({ children }) => {
         addUser,
         addRestaurant,
         getSizesByRestaurant,
+        addSize,
+        updateSizeOrder,
+        updateSizeName,
+        deleteSize,
         getTypeByEmail,
     };
 
