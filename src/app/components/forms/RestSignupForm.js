@@ -8,13 +8,11 @@ import { Thumbnail } from "../../components/forms";
 import * as Routes from "../../routes";
 import { useAuth, useFirestore, useStorage } from "../../services";
 
-import "./RestSignupForm.scss";
-
-// Defining variables for file uploads
+// Defining variables for file upload
 const FILE_SIZE = 2 * 1024 * 1024;
 const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
-// Defining the validation schemas for the forms
+// Defining the validation schema
 const restSignupValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").label("name"),
     companyNumber: Yup.string()

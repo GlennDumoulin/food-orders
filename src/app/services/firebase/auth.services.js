@@ -24,23 +24,29 @@ const AuthProvider = ({ children }) => {
      * @returns null|error
      */
     const login = (email, password) =>
-        auth.signInWithEmailAndPassword(email, password);
+        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
+            return auth.signInWithEmailAndPassword(email, password);
+        });
 
     /**
      * Register/Signup the current user
      * @param {String} name
      * @param {String} email
      * @param {String} password
-     * @returns return null|error
+     * @returns return user|error
      */
     const signup = (name, email, password) => {
         return auth
-            .createUserWithEmailAndPassword(email, password)
-            .then((response) => {
-                response.user.updateProfile({
-                    displayName: name,
-                });
-                return response.user;
+            .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            .then(() => {
+                return auth
+                    .createUserWithEmailAndPassword(email, password)
+                    .then((response) => {
+                        response.user.updateProfile({
+                            displayName: name,
+                        });
+                        return response.user;
+                    });
             });
     };
 

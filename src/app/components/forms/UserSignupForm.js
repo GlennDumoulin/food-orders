@@ -7,9 +7,7 @@ import * as Feather from "react-feather";
 import * as Routes from "../../routes";
 import { useAuth, useFirestore } from "../../services";
 
-import "./UserSignupForm.scss";
-
-// Defining the validation schemas for the forms
+// Defining the validation schema
 const userSignupValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").label("name"),
     email: Yup.string()

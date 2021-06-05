@@ -1,2 +1,8 @@
 .page--new-dish {
+    & .no-sizes {
+        margin-top: 10px;
+        & button {
+            margin-top: 30px;
+        }
+    }
 }

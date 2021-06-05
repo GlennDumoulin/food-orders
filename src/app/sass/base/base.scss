@@ -73,8 +73,18 @@ li {
     list-style: none;
 }
 
-span.small {
-    font-size: 0.75rem;
+span {
+    &.small {
+        font-size: 0.75rem;
+    }
+    &.error {
+        display: block;
+        color: $color-danger;
+    }
+    &.success {
+        display: block;
+        color: $color-confirm;
+    }
 }
 
 button {
@@ -140,6 +150,7 @@ button {
 }
 
 input,
+textarea,
 select {
     width: 100%;
     border: 1px solid $color-primary;
@@ -150,13 +161,8 @@ select {
     }
 }
 
-form {
-    & span {
-        &.error {
-            display: block;
-            color: $color-danger;
-        }
-    }
+textarea {
+    height: 100px;
 }
 
 .card {
@@ -191,7 +197,8 @@ form {
             margin: 0;
             padding: 0;
         }
-        & input {
+        & input,
+        & textarea {
             &.input {
                 &-error {
                     border-color: $color-danger;
@@ -212,10 +219,11 @@ form {
             &.success {
                 border-color: $color-confirm;
             }
-            & img {
+            & .upload-thumbnail {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
+                border-radius: 10px;
             }
         }
         & i {
@@ -243,6 +251,10 @@ form {
 .page {
     margin-top: 60px;
     padding: 60px 0;
+}
+
+.section {
+    margin-top: 30px;
 }
 
 .brand {

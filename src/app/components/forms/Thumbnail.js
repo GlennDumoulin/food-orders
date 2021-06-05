@@ -1,8 +1,6 @@
 // Imports
 import React, { useState, useEffect } from "react";
 
-import "./Thumbnail.scss";
-
 // Show a thumbnail for the uploaded file
 const Thumbnail = ({ thumbnail }) => {
     const [loading, setLoading] = useState(false);

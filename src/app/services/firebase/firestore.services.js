@@ -135,7 +135,7 @@ const FirestoreProvider = ({ children }) => {
             .update({
                 order: index,
             })
-            .then((docref) => {
+            .then((docRef) => {
                 return null;
             });
     };
@@ -154,7 +154,7 @@ const FirestoreProvider = ({ children }) => {
             .update({
                 name: name,
             })
-            .then((docref) => {
+            .then((docRef) => {
                 return null;
             });
     };
@@ -170,6 +170,62 @@ const FirestoreProvider = ({ children }) => {
         return sizeRef.delete().then((docRef) => {
             return null;
         });
+    };
+
+    const getDishById = async (id) => {
+        const dishRef = db.collection("dishes").doc(id);
+        const dish = await dishRef.get();
+
+        return {
+            id: dish.id,
+            ...dish.data(),
+        };
+    };
+
+    /**
+     * Add a dish to Firestore
+     * @param {String} name
+     * @param {String} description
+     * @param {Url} thumbnailUrl
+     * @param {Id} restaurantId
+     * @returns dishId|error
+     */
+    const addDish = async (name, description, thumbnailUrl, restaurantId) => {
+        return db
+            .collection("dishes")
+            .add({
+                name: name,
+                description: description,
+                thumbnailUrl: thumbnailUrl,
+                restaurantId: restaurantId,
+                available: true,
+            })
+            .then((docRef) => {
+                return docRef.id;
+            });
+    };
+
+    /**
+     * Update a dish in Firestore
+     * @param {Id} id
+     * @param {String} name
+     * @param {String} description
+     * @param {Url} thumbnailUrl
+     * @returns dishId|error
+     */
+    const updateDish = async (id, name, description, thumbnailUrl) => {
+        const dishRef = db.collection("dishes").doc(id);
+
+        return dishRef
+            .update({
+                name: name,
+                description: description,
+                thumbnailUrl: thumbnailUrl,
+                available: true,
+            })
+            .then((docRef) => {
+                return null;
+            });
     };
 
     /**
@@ -218,6 +274,9 @@ const FirestoreProvider = ({ children }) => {
         updateSizeOrder,
         updateSizeName,
         deleteSize,
+        getDishById,
+        addDish,
+        updateDish,
         getTypeByEmail,
     };
 

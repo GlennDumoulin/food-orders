@@ -119,18 +119,10 @@ export const ManageSizesPage = ({ children }) => {
                 />
             </div>
             <h1>Manage Sizes</h1>
-            <div className="d-none">
-                <p>
-                    By using a simple drag and drop you can order your sizes the
-                    way you want your customers to see them.
-                </p>
-                <p className="d-none d-md-block small">
-                    <em>
-                        Ordering is done from left to right and from top to
-                        bottom
-                    </em>
-                </p>
-            </div>
+            <p>
+                By using a simple drag and drop you can order your sizes the way
+                you want your customers to see them.
+            </p>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId="sizes-list">
                     {(provided) => (
@@ -139,7 +131,7 @@ export const ManageSizesPage = ({ children }) => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {!!sizes &&
+                            {!!sizes ? (
                                 sizes.map((size, index) => {
                                     return (
                                         <SizeListItem
@@ -148,7 +140,10 @@ export const ManageSizesPage = ({ children }) => {
                                             index={index}
                                         />
                                     );
-                                })}
+                                })
+                            ) : (
+                                <h3>No sizes found</h3>
+                            )}
                             {provided.placeholder}
                         </ul>
                     )}
