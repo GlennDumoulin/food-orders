@@ -4,19 +4,28 @@ import * as Feather from "react-feather";
 
 import { DishInfoForm, DishPricesForm } from "../../components/forms";
 import * as Routes from "../../routes";
-import { useAuth, useFirestore, useStorage } from "../../services";
+import { useFirestore, useStorage } from "../../services";
 
 import "./NewDishPage.scss";
 
 // Page content
 export const NewDishPage = () => {
     // Define variables and states
-    const { user } = useAuth();
+    const {
+        getDishById,
+        addDish,
+        updateDish,
+        getPriceById,
+        getPriceByDishAndSizeId,
+        addPrice,
+        updatePrice,
+        deletePrice,
+        getSizesByRestaurant,
+        user,
+    } = useFirestore();
     const restaurantName = user ? user.displayName : "";
     const restaurantId = user ? user.uid : "";
-    const { getDishById, addDish, updateDish, getSizesByRestaurant } =
-        useFirestore();
-    const { uploadImg } = useStorage();
+    const { uploadImg, deleteImg } = useStorage();
 
     const [sizes, setSizes] = useState();
     const [dish, setDish] = useState();
@@ -25,6 +34,7 @@ export const NewDishPage = () => {
     const [prices, setPrices] = useState();
     const [pricesError, setPricesError] = useState("");
     const [pricesSuccess, setPricesSuccess] = useState("");
+    const [sizesDone, setSizesDone] = useState(0);
 
     /**
      * Handle saving info changes
@@ -39,6 +49,7 @@ export const NewDishPage = () => {
                 const thumbnailUrl = await uploadImg(
                     "dishes",
                     restaurantName,
+                    name,
                     thumbnail
                 );
 
@@ -63,10 +74,14 @@ export const NewDishPage = () => {
             }
         } else {
             try {
+                // Delete previous image from Cloud Storage
+                await deleteImg("dishes", restaurantName, dish.name);
+
                 // Add image to Cloud Storage
                 const thumbnailUrl = await uploadImg(
                     "dishes",
                     restaurantName,
+                    name,
                     thumbnail
                 );
 
@@ -90,6 +105,140 @@ export const NewDishPage = () => {
     // Handle saving prices changes
     const handlePricesSubmit = async (ev) => {
         ev.preventDefault();
+
+        // Get the formdata
+        const pricesForm = document.getElementById("dish-prices");
+        const formData = new FormData(pricesForm);
+
+        // Get the formdata values
+        let values = [];
+        for (let value of formData.values()) {
+            values.push(value);
+        }
+
+        // If there are already prices added, edit those prices
+        if (!prices) {
+            try {
+                // Check if there is at least one value
+                if (values.length > 0) {
+                    let i = 0;
+                    let currentPrices = [];
+
+                    do {
+                        // Add price to FireStore
+                        const priceId = await addPrice(
+                            dish.id,
+                            values[i],
+                            parseFloat(values[i + 1])
+                        );
+
+                        // Get price data from Firestore and add to prices array
+                        const newPrice = await getPriceById(priceId);
+                        currentPrices.push(newPrice);
+
+                        // Skip 1 index for next iteration
+                        i += 2;
+                    } while (i < values.length - 1);
+
+                    // Set current prices
+                    setPrices(currentPrices);
+
+                    // Set success message
+                    setPricesError("");
+                    setPricesSuccess(
+                        "The prices for this dish were saved succesfully"
+                    );
+                } else {
+                    // Set error message
+                    setPricesSuccess("");
+                    setPricesError("Add at least 1 price to your dish");
+                }
+            } catch (error) {
+                setPricesSuccess("");
+                setPricesError(error.message);
+            }
+        } else {
+            try {
+                if (values.length > 0) {
+                    let i = 0;
+                    let updatedPrices = [];
+                    let formValues = values;
+                    setSizesDone(0);
+
+                    // Check all restaurant sizes if they have a price or not, then check
+                    // submitted form for that size and update, delete or create depending on result
+                    sizes.map(async (size) => {
+                        // Get price from Firestore using dish and sizeId
+                        const result = await getPriceByDishAndSizeId(
+                            dish.id,
+                            size.id
+                        );
+                        const price = result[0];
+
+                        if (price) {
+                            // Get the index of the sizeId from the submitted form data
+                            const valuesIndex = formValues.findIndex(
+                                (value) => {
+                                    return value === price.sizeId;
+                                }
+                            );
+
+                            if (valuesIndex !== -1) {
+                                // If price and valuesIndex exist update price in Firestore
+                                await updatePrice(
+                                    price.id,
+                                    parseFloat(formValues[valuesIndex + 1])
+                                );
+
+                                // Get price data from Firestore and add to prices array
+                                const updatedPrice = await getPriceById(
+                                    price.id
+                                );
+                                updatedPrices.push(updatedPrice);
+
+                                // Remove items from formdata array
+                                formValues.splice(valuesIndex, 2);
+                            } else {
+                                // If price exists delete price from Firestore
+                                await deletePrice(price.id);
+                            }
+                        }
+                    });
+
+                    while (i < formValues.length - 1) {
+                        // Add price to FireStore
+                        const priceId = await addPrice(
+                            dish.id,
+                            formValues[i],
+                            parseFloat(formValues[i + 1])
+                        );
+
+                        // Get price data from Firestore and add to prices array
+                        const newPrice = await getPriceById(priceId);
+                        updatedPrices.push(newPrice);
+
+                        // Skip 1 index for next iteration
+                        i += 2;
+                    }
+
+                    // Set current prices
+                    setPrices(updatedPrices);
+
+                    // Set success message
+                    setPricesError("");
+                    setPricesSuccess(
+                        "The prices for this dish were updated succesfully"
+                    );
+                } else {
+                    // Set error message
+                    setPricesSuccess("");
+                    setPricesError("Add at least 1 price to your dish");
+                }
+            } catch (error) {
+                setPricesSuccess("");
+                setPricesError(error.message);
+            }
+        }
     };
 
     // Get all sizes from the current restaurant on page load
@@ -109,7 +258,7 @@ export const NewDishPage = () => {
     });
 
     return (
-        <div className="page page--new-dish row">
+        <div className="page page--new-dish">
             <div className="back-btn">
                 <Feather.ArrowLeftCircle
                     onClick={() => window.location.assign(Routes.OUR_MENU)}
@@ -117,21 +266,40 @@ export const NewDishPage = () => {
                 />
             </div>
             <h1>New Dish</h1>
-            <div className="section col-12 col-md-6">
-                <h2>Info</h2>
-                <DishInfoForm handleSubmit={handleInfoSubmit} />
-                <span className="error">{infoError}</span>
-                <span className="success">{infoSuccess}</span>
-            </div>
-            <div className="section col-12 col-md-6">
-                <h2>Prices</h2>
-                <DishPricesForm
-                    sizes={sizes}
-                    handleSubmit={handlePricesSubmit}
-                />
-                <span className="error">{pricesError}</span>
-                <span className="success">{pricesSuccess}</span>
-            </div>
+            {!!sizes ? (
+                <div className="dish-container row">
+                    <div className="section col-12 col-md-6">
+                        <h2>Info</h2>
+                        <DishInfoForm handleSubmit={handleInfoSubmit} />
+                        <span className="error">{infoError}</span>
+                        <span className="success">{infoSuccess}</span>
+                    </div>
+                    <div className="section col-12 col-md-6">
+                        <h2>Prices</h2>
+                        <DishPricesForm
+                            sizes={sizes}
+                            dish={dish}
+                            handleSubmit={handlePricesSubmit}
+                        />
+                        <span className="error">{pricesError}</span>
+                        <span className="success">{pricesSuccess}</span>
+                    </div>
+                </div>
+            ) : (
+                <div className="no-sizes">
+                    <h3>No sizes found</h3>
+                    <p>Please manage your sizes before adding dishes.</p>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            window.location.assign(Routes.MANAGE_SIZES)
+                        }
+                        className="fill"
+                    >
+                        Start managing my sizes
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

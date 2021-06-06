@@ -6,7 +6,7 @@ import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Popup } from "../../components/popup";
 import { SizeListItem } from "../../components/sizes";
 import * as Routes from "../../routes";
-import { useAuth, useFirebase, useFirestore } from "../../services";
+import { useFirebase, useFirestore } from "../../services";
 
 import "./ManageSizesPage.scss";
 
@@ -15,8 +15,7 @@ export const ManageSizesPage = ({ children }) => {
     // Define variables and states
     const { app } = useFirebase();
     const db = app.firestore();
-    const { user } = useAuth();
-    const { addSize, updateSizeOrder } = useFirestore();
+    const { addSize, updateSizeOrder, user } = useFirestore();
 
     const [sizes, setSizes] = useState([]);
     const [msg, setMsg] = useState("");
@@ -76,7 +75,7 @@ export const ManageSizesPage = ({ children }) => {
         }
     };
 
-    // Handle reordering of sizes after drag
+    // Handle reordering the sizes after drag
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
 

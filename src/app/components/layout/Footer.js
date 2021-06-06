@@ -1,57 +1,43 @@
 // Imports
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import * as Routes from "../../routes";
-import { useAuth, useFirestore } from "../../services";
+import { useFirestore } from "../../services";
 
 import "./Footer.scss";
 
 // Footer content
 const Footer = ({ children }) => {
-    // Define variables and states
-    const { user } = useAuth();
-    const { getTypeByEmail } = useFirestore();
-    const [type, setType] = useState("");
-
-    // Handle setting type of user
-    const handleSetType = async () => {
-        const userEmail = user ? user.email : "";
-        const type = await getTypeByEmail(userEmail);
-        setType(type);
-    };
-
-    // Set type of user on page load
-    useEffect(() => {
-        handleSetType();
-    });
+    // Define variable
+    const { type, loading } = useFirestore();
 
     return (
         <footer className="app-footer">
             <div className="footer-content container">
                 <h1 className="footer-brand">
-                    {type === "logged_out" && (
+                    {!loading && type === "logged_out" && (
                         <Link to={Routes.HOME} className="brand">
                             <span>F</span>ood
                             <br />
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "user" && (
+                    {!loading && type === "user" && (
                         <Link to={Routes.MY_OVERVIEW} className="brand">
                             <span>F</span>ood
                             <br />
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "restaurant" && (
+                    {!loading && type === "restaurant" && (
                         <Link to={Routes.ORDERS} className="brand">
                             <span>F</span>ood
                             <br />
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "admin" && (
+                    {!loading && type === "admin" && (
                         <Link to={Routes.MANAGE_RESTAURANTS} className="brand">
                             <span>F</span>ood
                             <br />

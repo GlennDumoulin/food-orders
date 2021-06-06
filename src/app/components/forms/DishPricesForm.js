@@ -1,15 +1,11 @@
 // Imports
-import React, { useState } from "react";
-import Checkbox from "@material-ui/core/Checkbox";
+import React from "react";
 
-import * as Routes from "../../routes";
+import { ToggleableInput } from "../../components/forms";
 
-const DishPricesForm = ({ sizes, handleSubmit }) => {
-    // Define states
-    const [disabled, setDisabled] = useState(true);
-    const [checked, setChecked] = useState(false);
-
-    return !!sizes ? (
+// Show the form for prices of a dish
+const DishPricesForm = ({ sizes, dish, handleSubmit }) => {
+    return dish ? (
         <form
             name="dish-prices"
             id="dish-prices"
@@ -17,42 +13,16 @@ const DishPricesForm = ({ sizes, handleSubmit }) => {
             className="dish-prices"
         >
             {sizes.map((size) => {
-                return (
-                    // Make sizePrice component
-                    <div className="form-item">
-                        <Checkbox
-                            checked={checked}
-                            color={"#feb510"}
-                            onChange={() => setChecked(!checked)}
-                        />
-                        <label>{size.name}</label>
-                        {checked ? (
-                            <p>Show price input</p>
-                        ) : (
-                            <p>Hide price input</p>
-                        )}
-                    </div>
-                );
+                return <ToggleableInput size={size} key={size.id} />;
             })}
-            <button
-                type="submit"
-                className={disabled ? "fill disabled" : "fill"}
-                disabled={disabled}
-            >
+            <button type="submit" className="fill">
                 Save prices changes
             </button>
         </form>
     ) : (
-        <div className="no-sizes">
-            <h3>No sizes found</h3>
-            <p>Please manage your sizes before adding dishes.</p>
-            <button
-                type="button"
-                onClick={() => window.location.assign(Routes.MANAGE_SIZES)}
-                className="fill"
-            >
-                Start managing my sizes
-            </button>
+        <div className="no-dish">
+            <h3>No dish found</h3>
+            <p>Please add and save your info changes before adding prices.</p>
         </div>
     );
 };

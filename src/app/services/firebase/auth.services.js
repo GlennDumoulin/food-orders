@@ -1,5 +1,5 @@
 // Imports
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 
@@ -11,11 +11,9 @@ const useAuth = () => useContext(AuthContext);
 
 // Create Provider for Authentication
 const AuthProvider = ({ children }) => {
-    // Define variables and states
+    // Define variables
     const { app } = useFirebase();
     const auth = app.auth();
-
-    const [user, setUser] = useState(null);
 
     /**
      * Log the current user in
@@ -23,10 +21,13 @@ const AuthProvider = ({ children }) => {
      * @param {String} password
      * @returns null|error
      */
-    const login = (email, password) =>
-        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).then(() => {
-            return auth.signInWithEmailAndPassword(email, password);
-        });
+    const login = (email, password) => {
+        return auth
+            .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+            .then(() => {
+                return auth.signInWithEmailAndPassword(email, password);
+            });
+    };
 
     /**
      * Register/Signup the current user
@@ -58,7 +59,7 @@ const AuthProvider = ({ children }) => {
      * @param {string} password
      * @returns null|error
      */
-    const reauthenticate = (password) => {
+    const reauthenticate = (user, password) => {
         const credential = firebase.auth.EmailAuthProvider.credential(
             user.email,
             password
@@ -69,20 +70,7 @@ const AuthProvider = ({ children }) => {
         });
     };
 
-    // Set a global user variable if user is signed in
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                setUser(null);
-            }
-        });
-        return () => unsubscribe();
-    }, [auth]);
-
     const value = {
-        user,
         login,
         logout,
         signup,

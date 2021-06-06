@@ -208,6 +208,16 @@ textarea {
                 }
             }
         }
+        &.checkbox {
+            margin-bottom: 0;
+        }
+        & .PrivateSwitchBase-root-1 {
+            padding: 0;
+            padding-right: 10px;
+            & .MuiSvgIcon-root {
+                fill: $color-primary;
+            }
+        }
         & .thumbnail-preview {
             width: 80px;
             height: 80px;

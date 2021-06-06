@@ -95,7 +95,12 @@ const RestSignupForm = ({ children }) => {
             const user = await signup(name, email, password);
 
             // Add logo to Cloud Storage
-            const thumbnailUrl = await uploadImg("logos", name, thumbnail);
+            const thumbnailUrl = await uploadImg(
+                "logos",
+                name,
+                `logo-${name}`,
+                thumbnail
+            );
 
             // Add restaurant to Firestore
             await addRestaurant(

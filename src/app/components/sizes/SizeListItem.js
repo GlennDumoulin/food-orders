@@ -17,68 +17,56 @@ const SizeListItem = ({ size, index }) => {
     const [editSizeError, setEditSizeError] = useState("");
     const [deleteSizeError, setDeleteSizeError] = useState("");
 
-    // Handle opening the edit size popup & disable scrolling
-    const handleEditSizePopup = () => {
-        const editSizePopup = document.getElementById(`edit-size-${size.id}`);
-        editSizePopup.classList.remove("hidden");
+    /**
+     * Handle opening a popup & disable scrolling
+     * @param {String} action
+     */
+    const handleOpenPopup = (action) => {
+        const popup = document.getElementById(`${action}-size-${size.id}`);
+        popup.classList.remove("hidden");
 
         const body = document.body;
         body.style.overflowX = "hidden";
         body.style.overflowY = "hidden";
     };
 
-    // Handle adding a size to Firestore
-    const handleEditSize = async (ev) => {
+    /**
+     * Handle submitting update/delete of a size to Firestore
+     * @param {Event} ev
+     * @param {String} action
+     * @returns null|error
+     */
+    const handleSubmit = async (ev, action) => {
         ev.preventDefault();
 
         try {
-            // Get the formdata
-            const editSizeForm = document.getElementById(
-                `edit-size-form-${size.id}`
-            );
-            const formData = new FormData(editSizeForm);
-            const name = formData.get("name");
+            if (action === "edit") {
+                // Get the formdata
+                const editSizeForm = document.getElementById(
+                    `edit-size-form-${size.id}`
+                );
+                const formData = new FormData(editSizeForm);
+                const name = formData.get("name");
 
-            // Update name of the size in Firestore
-            await updateSizeName(size.id, name);
+                // Update name of the size in Firestore
+                await updateSizeName(size.id, name);
 
-            // Close the popup & enable scrolling
-            const popup = document.getElementById(`edit-size-${size.id}`);
-            popup.classList.add("hidden");
-
-            const body = document.body;
-            body.style.overflowX = "hidden";
-            body.style.overflowY = "auto";
-        } catch (error) {
-            setEditSizeError(error.message);
-        }
-    };
-
-    // Handle opening the delete size popup & disable scrolling
-    const handleDeleteSizePopup = () => {
-        const deleteSizePopup = document.getElementById(
-            `delete-size-${size.id}`
-        );
-        deleteSizePopup.classList.remove("hidden");
-
-        const body = document.body;
-        body.style.overflowX = "hidden";
-        body.style.overflowY = "hidden";
-    };
-
-    const handleDeleteSize = async (ev) => {
-        ev.preventDefault();
-
-        try {
-            // Delete the size from Firstore
-            await deleteSize(size.id);
+                // Close the popup
+                const popup = document.getElementById(`edit-size-${size.id}`);
+                popup.classList.add("hidden");
+            }
+            if (action === "delete") {
+                // Delete the size from Firstore
+                await deleteSize(size.id);
+            }
 
             // Enable scrolling
             const body = document.body;
             body.style.overflowX = "hidden";
             body.style.overflowY = "auto";
         } catch (error) {
-            setDeleteSizeError(error.message);
+            if (action === "edit") setEditSizeError(error.message);
+            if (action === "delete") setDeleteSizeError(error.message);
         }
     };
 
@@ -97,14 +85,14 @@ const SizeListItem = ({ size, index }) => {
                             <div className="manage-size-container">
                                 <button
                                     type="button"
-                                    onClick={handleEditSizePopup}
+                                    onClick={() => handleOpenPopup("edit")}
                                     className="edit-size small"
                                 >
                                     <Feather.Edit />
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={handleDeleteSizePopup}
+                                    onClick={() => handleOpenPopup("delete")}
                                     className="delete-size danger small"
                                 >
                                     <Feather.Trash2 />
@@ -118,7 +106,7 @@ const SizeListItem = ({ size, index }) => {
                 popupId={`edit-size-${size.id}`}
                 title="Edit size"
                 formId={`edit-size-form-${size.id}`}
-                handleSubmit={handleEditSize}
+                handleSubmit={(ev) => handleSubmit(ev, "edit")}
             >
                 <div className="form-item">
                     <label htmlFor="name">Name</label>
@@ -136,7 +124,7 @@ const SizeListItem = ({ size, index }) => {
                 title="Are you sure you want to delete this size?"
                 description={size.name}
                 formId={`edit-size-form-${size.id}`}
-                handleSubmit={handleDeleteSize}
+                handleSubmit={(ev) => handleSubmit(ev, "delete")}
             >
                 <span className="error">{deleteSizeError}</span>
             </Popup>

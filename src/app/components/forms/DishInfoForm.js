@@ -28,6 +28,7 @@ const dishInfoValidationSchema = Yup.object().shape({
         .label("thumbnail"),
 });
 
+// Show the form for info of a dish
 const DishInfoForm = ({
     initialValues = { name: "", description: "", thumbnail: "" },
     handleSubmit,

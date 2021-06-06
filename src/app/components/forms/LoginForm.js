@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import * as Feather from "react-feather";
 
 import * as Routes from "../../routes";
-import { useAuth, useFirestore } from "../../services";
+import { useAuth } from "../../services";
 
 // Defining the validation schema
 const loginValidationSchema = Yup.object().shape({
@@ -23,7 +23,6 @@ const loginValidationSchema = Yup.object().shape({
 const LoginForm = ({ children }) => {
     // Define variables and states
     const { login } = useAuth();
-    const { getTypeByEmail } = useFirestore();
 
     const [error, setError] = useState("");
     const [pwVisible, setPwVisible] = useState(false);
@@ -37,17 +36,6 @@ const LoginForm = ({ children }) => {
         try {
             // Log person in using Firebase authentication
             await login(email, password);
-
-            // Get the type of person logging in
-            const type = await getTypeByEmail(email);
-
-            // Redirect depending on type
-            if (type && type === "user")
-                window.location.assign(Routes.MY_OVERVIEW);
-            if (type && type === "admin")
-                window.location.assign(Routes.MANAGE_RESTAURANTS);
-            if (type && type === "restaurant")
-                window.location.assign(Routes.ORDERS);
         } catch (error) {
             setError(error.message);
         }

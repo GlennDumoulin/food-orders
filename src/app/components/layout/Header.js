@@ -1,5 +1,5 @@
 // Imports
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import * as Feather from "react-feather";
 
@@ -11,23 +11,18 @@ import "./Header.scss";
 // Header content
 const Header = ({ children }) => {
     // Define variables and states
-    const { user, logout } = useAuth();
-    const { getTypeByEmail } = useFirestore();
+    const { logout } = useAuth();
+    const { type, loading } = useFirestore();
 
     const [showNav, setShowNav] = useState(false);
-    const [type, setType] = useState("");
 
-    // Handle setting type of user
-    const handleSetType = async () => {
-        const userEmail = user ? user.email : "";
-        const type = await getTypeByEmail(userEmail);
-        setType(type);
-    };
-
-    // Set type of user on page load
-    useEffect(() => {
-        handleSetType();
-    });
+    // Redirect after login
+    if (!loading && window.location.pathname === Routes.REGISTER_LOGIN) {
+        if (type === "user") return window.location.assign(Routes.MY_OVERVIEW);
+        if (type === "admin")
+            return window.location.assign(Routes.MANAGE_RESTAURANTS);
+        if (type === "restaurant") return window.location.assign(Routes.ORDERS);
+    }
 
     // Close the navbar
     const closeNavbar = () => {
@@ -44,7 +39,7 @@ const Header = ({ children }) => {
         >
             <nav className="navbar navbar-expand-md container">
                 <h1 className="navbar-brand">
-                    {type === "logged_out" && (
+                    {!loading && type === "logged_out" && (
                         <Link
                             to={Routes.HOME}
                             className="brand"
@@ -54,7 +49,7 @@ const Header = ({ children }) => {
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "user" && (
+                    {!loading && type === "user" && (
                         <Link
                             to={Routes.MY_OVERVIEW}
                             className="brand"
@@ -64,7 +59,7 @@ const Header = ({ children }) => {
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "restaurant" && (
+                    {!loading && type === "restaurant" && (
                         <Link
                             to={Routes.ORDERS}
                             className="brand"
@@ -74,7 +69,7 @@ const Header = ({ children }) => {
                             <span>O</span>rders
                         </Link>
                     )}
-                    {type === "admin" && (
+                    {!loading && type === "admin" && (
                         <Link
                             to={Routes.MANAGE_RESTAURANTS}
                             className="brand"
@@ -102,7 +97,7 @@ const Header = ({ children }) => {
                             : "collapse navbar-collapse"
                     }
                 >
-                    {type === "logged_out" && (
+                    {!loading && type === "logged_out" && (
                         <ul className="navbar-nav mr-auto justify-content-end flex-grow-1">
                             <li className="nav-item">
                                 <NavLink
@@ -126,7 +121,7 @@ const Header = ({ children }) => {
                             </li>
                         </ul>
                     )}
-                    {type === "user" && (
+                    {!loading && type === "user" && (
                         <ul className="navbar-nav mr-auto justify-content-end flex-grow-1">
                             <li className="nav-item">
                                 <NavLink
@@ -183,7 +178,7 @@ const Header = ({ children }) => {
                             </li>
                         </ul>
                     )}
-                    {type === "restaurant" && (
+                    {!loading && type === "restaurant" && (
                         <ul className="navbar-nav mr-auto justify-content-end flex-grow-1">
                             <li className="nav-item">
                                 <NavLink
@@ -230,7 +225,7 @@ const Header = ({ children }) => {
                             </li>
                         </ul>
                     )}
-                    {type === "admin" && (
+                    {!loading && type === "admin" && (
                         <ul className="navbar-nav mr-auto justify-content-end flex-grow-1">
                             <li className="nav-item">
                                 <NavLink
