@@ -59,6 +59,7 @@ const StorageProvider = ({ children }) => {
         });
     };
 
+    // Return values
     const value = {
         uploadImg,
         deleteImg,

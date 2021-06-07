@@ -11,7 +11,7 @@ const Popup = ({
     leftBtn = {
         type: "danger",
         cols: 6,
-        name: "close",
+        name: "cancel",
     },
     rightBtn = {
         type: "confirm",

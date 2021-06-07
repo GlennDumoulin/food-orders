@@ -16,7 +16,7 @@ const AuthProvider = ({ children }) => {
     const auth = app.auth();
 
     /**
-     * Log the current user in
+     * Log the current user in and set session persistence
      * @param {String} email
      * @param {String} password
      * @returns null|error
@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
     };
 
     /**
-     * Register/Signup the current user
+     * Register the current user and set session persistence
      * @param {String} name
      * @param {String} email
      * @param {String} password
@@ -56,6 +56,7 @@ const AuthProvider = ({ children }) => {
 
     /**
      * Re-authenticate the user
+     * @param {Object} user
      * @param {string} password
      * @returns null|error
      */
@@ -70,6 +71,7 @@ const AuthProvider = ({ children }) => {
         });
     };
 
+    // Return values
     const value = {
         login,
         logout,

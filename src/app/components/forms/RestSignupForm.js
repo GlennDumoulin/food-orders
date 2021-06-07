@@ -65,6 +65,7 @@ const restSignupValidationSchema = Yup.object().shape({
         .label("thumbnail"),
 });
 
+// Show the form for restaurant signup
 const RestSignupForm = ({ children }) => {
     // Define variables and states
     const { signup } = useAuth();

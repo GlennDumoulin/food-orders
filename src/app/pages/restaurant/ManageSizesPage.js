@@ -168,7 +168,7 @@ export const ManageSizesPage = ({ children }) => {
             >
                 <div className="form-item">
                     <label htmlFor="name">Name</label>
-                    <input type="text" name="name" />
+                    <input type="text" name="name" required />
                 </div>
                 <span className="error">{addSizeError}</span>
             </Popup>

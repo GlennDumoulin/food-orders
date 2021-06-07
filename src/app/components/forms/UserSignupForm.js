@@ -50,7 +50,7 @@ const UserSignupForm = ({ children }) => {
             // Add user to Firestore
             await addUser(user.uid, name, email);
 
-            // Redirect to Home page
+            // Redirect to My overview page
             window.location.assign(Routes.MY_OVERVIEW);
         } catch (error) {
             setError(error.message);

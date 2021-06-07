@@ -19,7 +19,7 @@ const loginValidationSchema = Yup.object().shape({
         .label("password"),
 });
 
-// Show the form for the user signup
+// Show the form for logging in
 const LoginForm = ({ children }) => {
     // Define variables and states
     const { login } = useAuth();
@@ -28,7 +28,7 @@ const LoginForm = ({ children }) => {
     const [pwVisible, setPwVisible] = useState(false);
 
     /**
-     * Handle user signup
+     * Handle login
      * @param {Object} formData
      * @returns redirect|error
      */

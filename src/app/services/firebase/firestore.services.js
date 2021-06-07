@@ -85,7 +85,7 @@ const FirestoreProvider = ({ children }) => {
     /**
      * Get all sizes from a restaurant
      * @param {Id} restaurantId
-     * @returns querysnapshot|error
+     * @returns sizes|error
      */
     const getSizesByRestaurant = async (restaurantId) => {
         const query = db
@@ -150,7 +150,6 @@ const FirestoreProvider = ({ children }) => {
      * Update the name of a size in Firestore
      * @param {Id} id
      * @param {String} name
-     * @param {Number} index
      * @returns null|error
      */
     const updateSizeName = async (id, name) => {
@@ -387,6 +386,7 @@ const FirestoreProvider = ({ children }) => {
         return () => unsubscribe();
     }, [auth, db]);
 
+    // Return values
     const value = {
         addUser,
         addRestaurant,

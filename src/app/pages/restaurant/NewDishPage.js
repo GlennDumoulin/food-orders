@@ -16,7 +16,6 @@ export const NewDishPage = () => {
         addDish,
         updateDish,
         getPriceById,
-        getPriceByDishAndSizeId,
         addPrice,
         updatePrice,
         deletePrice,
@@ -34,7 +33,6 @@ export const NewDishPage = () => {
     const [prices, setPrices] = useState();
     const [pricesError, setPricesError] = useState("");
     const [pricesSuccess, setPricesSuccess] = useState("");
-    const [sizesDone, setSizesDone] = useState(0);
 
     /**
      * Handle saving info changes
@@ -159,21 +157,22 @@ export const NewDishPage = () => {
             }
         } else {
             try {
+                // Check if there is at least one value
                 if (values.length > 0) {
-                    let i = 0;
                     let updatedPrices = [];
                     let formValues = values;
-                    setSizesDone(0);
+                    let currentPrices = prices;
 
                     // Check all restaurant sizes if they have a price or not, then check
                     // submitted form for that size and update, delete or create depending on result
                     sizes.map(async (size) => {
-                        // Get price from Firestore using dish and sizeId
-                        const result = await getPriceByDishAndSizeId(
-                            dish.id,
-                            size.id
-                        );
-                        const price = result[0];
+                        // Search price in current prices array
+                        const price = currentPrices.find((price) => {
+                            return (
+                                price.dishId === dish.id &&
+                                price.sizeId === size.id
+                            );
+                        });
 
                         if (price) {
                             // Get the index of the sizeId from the submitted form data
@@ -202,24 +201,28 @@ export const NewDishPage = () => {
                                 // If price exists delete price from Firestore
                                 await deletePrice(price.id);
                             }
+                        } else {
+                            // Get the index of the sizeId from the submitted form data
+                            const valuesIndex = formValues.findIndex(
+                                (value) => {
+                                    return value === size.id;
+                                }
+                            );
+
+                            if (valuesIndex !== -1) {
+                                // If valuesIndex exists add price to FireStore
+                                const priceId = await addPrice(
+                                    dish.id,
+                                    formValues[valuesIndex],
+                                    parseFloat(formValues[valuesIndex + 1])
+                                );
+
+                                // Get price data from Firestore and add to prices array
+                                const newPrice = await getPriceById(priceId);
+                                updatedPrices.push(newPrice);
+                            }
                         }
                     });
-
-                    while (i < formValues.length - 1) {
-                        // Add price to FireStore
-                        const priceId = await addPrice(
-                            dish.id,
-                            formValues[i],
-                            parseFloat(formValues[i + 1])
-                        );
-
-                        // Get price data from Firestore and add to prices array
-                        const newPrice = await getPriceById(priceId);
-                        updatedPrices.push(newPrice);
-
-                        // Skip 1 index for next iteration
-                        i += 2;
-                    }
 
                     // Set current prices
                     setPrices(updatedPrices);

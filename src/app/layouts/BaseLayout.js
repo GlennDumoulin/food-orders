@@ -11,4 +11,5 @@ const BaseLayout = ({ children }) => (
         <Footer />
     </Fragment>
 );
+
 export default BaseLayout;

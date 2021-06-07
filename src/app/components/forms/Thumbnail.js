@@ -3,9 +3,11 @@ import React, { useState, useEffect } from "react";
 
 // Show a thumbnail for the uploaded file
 const Thumbnail = ({ thumbnail }) => {
+    // Defining states
     const [loading, setLoading] = useState(false);
     const [thumb, setThumb] = useState(undefined);
 
+    // Set thumbnail preview if file is uploaded
     useEffect(() => {
         if (!thumbnail) return;
 

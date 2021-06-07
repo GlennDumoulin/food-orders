@@ -11,7 +11,7 @@ import "./RegisterLoginPage.scss";
 
 // Page content
 export const RegisterLoginPage = ({ children }) => {
-    // Define state
+    // Define states
     const [formSelector, setFormSelector] = useState("register");
     const [type, setType] = useState("user");
 
