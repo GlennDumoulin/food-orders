@@ -258,7 +258,7 @@ export const NewDishPage = () => {
 
         // Stop listening to changes
         unsubscribe();
-    });
+    }, [getSizesByRestaurant, restaurantId]);
 
     return (
         <div className="page page--new-dish">

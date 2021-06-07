@@ -37,12 +37,12 @@ const Popup = ({
             className="popup hidden fixed-top d-flex justify-content-center align-items-center"
             id={popupId}
         >
-            <div className="card">
-                <h3 className="card-title">{title}</h3>
-                <p className="card-description">{description}</p>
+            <div className="popup-card">
+                <h3 className="popup-card--title">{title}</h3>
+                <p className="popup-card--description">{description}</p>
                 <form onSubmit={handleSubmit} id={formId} name={formId}>
                     {children}
-                    <div className="card-btns-container row">
+                    <div className="popup-card--btns-container row">
                         <div className={`col-${leftBtn.cols}`}>
                             <button
                                 type="button"

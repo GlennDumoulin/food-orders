@@ -83,7 +83,7 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Get all sizes from a restaurant
+     * Get all sizes from a restaurant from Firestore
      * @param {Id} restaurantId
      * @returns sizes|error
      */
@@ -193,6 +193,26 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
+     * Get all dishes from a restaurant from Firestore
+     * @param {Id} restaurantId
+     * @returns dishes|error
+     */
+    const getDishesByRestaurant = async (restaurantId) => {
+        const query = db
+            .collection("dishes")
+            .where("restaurantId", "==", restaurantId)
+            .orderBy("name");
+        const querySnapshot = await query.get();
+        const dishes = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return dishes;
+    };
+
+    /**
      * Add a dish to Firestore
      * @param {String} name
      * @param {String} description
@@ -231,11 +251,41 @@ const FirestoreProvider = ({ children }) => {
                 name: name,
                 description: description,
                 thumbnailUrl: thumbnailUrl,
-                available: true,
             })
             .then((docRef) => {
                 return null;
             });
+    };
+
+    /**
+     * Update availability of a dish in Firestore
+     * @param {Id} id
+     * @param {Boolean} available
+     * @returns null|error
+     */
+    const updateDishAvailablity = async (id, available) => {
+        const dishRef = db.collection("dishes").doc(id);
+
+        return dishRef
+            .update({
+                available: available,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Delete a dish from Firestore
+     * @param {Id} id
+     * @returns null|error
+     */
+    const deleteDish = async (id) => {
+        const dishRef = db.collection("dishes").doc(id);
+
+        return dishRef.delete().then((docRef) => {
+            return null;
+        });
     };
 
     /**
@@ -396,8 +446,11 @@ const FirestoreProvider = ({ children }) => {
         updateSizeName,
         deleteSize,
         getDishById,
+        getDishesByRestaurant,
         addDish,
         updateDish,
+        updateDishAvailablity,
+        deleteDish,
         getPriceById,
         getPriceByDishAndSizeId,
         addPrice,

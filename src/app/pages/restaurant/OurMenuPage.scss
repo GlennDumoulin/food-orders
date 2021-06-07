@@ -5,4 +5,9 @@
             margin-bottom: 10px;
         }
     }
+    & .dishes-list {
+        &--item {
+            text-decoration: none;
+        }
+    }
 }

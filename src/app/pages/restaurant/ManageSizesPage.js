@@ -16,6 +16,7 @@ export const ManageSizesPage = ({ children }) => {
     const { app } = useFirebase();
     const db = app.firestore();
     const { addSize, updateSizeOrder, user } = useFirestore();
+    const restaurantId = user ? user.uid : "";
 
     const [sizes, setSizes] = useState([]);
     const [msg, setMsg] = useState("");
@@ -43,7 +44,6 @@ export const ManageSizesPage = ({ children }) => {
             const name = formData.get("name");
 
             // Add size to Firestore
-            const restaurantId = user ? user.uid : "";
             await addSize(name, restaurantId);
 
             // Close the popup & enable scrolling
@@ -88,8 +88,6 @@ export const ManageSizesPage = ({ children }) => {
 
     // Set sizes by restaurant on page load and update on change
     useEffect(() => {
-        const restaurantId = user ? user.uid : "";
-
         const unsubscribe = () => {
             db.collection("sizes")
                 .where("restaurantId", "==", restaurantId)
@@ -107,7 +105,7 @@ export const ManageSizesPage = ({ children }) => {
 
         // Stop listening to changes
         unsubscribe();
-    }, [user, db]);
+    }, [user, db, restaurantId]);
 
     return (
         <div className="page page--manage-sizes">
