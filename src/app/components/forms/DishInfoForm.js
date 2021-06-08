@@ -13,19 +13,23 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 const dishInfoValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required").label("name"),
     description: Yup.string().optional().label("email"),
-    thumbnail: Yup.mixed()
-        .required("Image is required")
-        .test(
-            "fileFormat",
-            "Unsupported Format",
-            (value) => value && SUPPORTED_FORMATS.includes(value.type)
-        )
-        .test(
-            "fileSize",
-            "File too large: max size is 2MB",
-            (value) => value && value.size <= FILE_SIZE
-        )
-        .label("thumbnail"),
+    thumbnail: Yup.lazy((value) =>
+        typeof value === "object"
+            ? Yup.mixed()
+                  .required("Image is required")
+                  .test(
+                      "fileFormat",
+                      "Unsupported Format",
+                      (value) => value && SUPPORTED_FORMATS.includes(value.type)
+                  )
+                  .test(
+                      "fileSize",
+                      "File too large: max size is 2MB",
+                      (value) => value && value.size <= FILE_SIZE
+                  )
+                  .label("thumbnail")
+            : Yup.string().required("Image is required")
+    ),
 });
 
 // Show the form for info of a dish
@@ -49,6 +53,14 @@ const DishInfoForm = ({
                     setFieldValue,
                     setFieldTouched,
                 } = formik;
+
+                if (
+                    typeof values.thumbnail === "string" &&
+                    values.thumbnail !== ""
+                ) {
+                    setFieldValue("thumbnail", false);
+                }
+
                 return (
                     <Form className="dish-ifo">
                         <div className="form-item">
@@ -97,13 +109,19 @@ const DishInfoForm = ({
                                     name="thumbnail"
                                     id="thumbnail"
                                     className="hidden"
-                                    onClick={() =>
-                                        setFieldTouched("thumbnail", true, true)
-                                    }
+                                    onClick={() => {
+                                        setFieldValue("thumbnail", "");
+                                        setFieldTouched(
+                                            "thumbnail",
+                                            true,
+                                            true
+                                        );
+                                    }}
                                     onChange={(ev) => {
                                         setFieldValue(
                                             "thumbnail",
-                                            ev.currentTarget.files[0]
+                                            ev.currentTarget.files[0],
+                                            true
                                         );
                                     }}
                                 />
@@ -136,6 +154,11 @@ const DishInfoForm = ({
                                                 thumbnail={values.thumbnail}
                                             />
                                         )}
+                                    {values.thumbnail === false && (
+                                        <Thumbnail
+                                            thumbnail={initialValues.thumbnail}
+                                        />
+                                    )}
                                 </div>
                                 <ErrorMessage
                                     name="thumbnail"

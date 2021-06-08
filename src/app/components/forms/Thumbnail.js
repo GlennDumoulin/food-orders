@@ -9,7 +9,7 @@ const Thumbnail = ({ thumbnail }) => {
 
     // Set thumbnail preview if file is uploaded
     useEffect(() => {
-        if (!thumbnail) return;
+        if (!thumbnail || typeof thumbnail === "string") return;
 
         setLoading(true);
 
@@ -27,8 +27,8 @@ const Thumbnail = ({ thumbnail }) => {
 
     return (
         <img
-            src={thumb}
-            alt={thumbnail.name}
+            src={thumb ? thumb : thumbnail}
+            alt={thumb ? thumbnail.name : thumbnail}
             className="upload-thumbnail"
             height={200}
             width={200}

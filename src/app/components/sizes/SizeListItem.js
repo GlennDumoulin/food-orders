@@ -11,7 +11,8 @@ import "./SizeListItem.scss";
 // Size list item content
 const SizeListItem = ({ size, index }) => {
     // Define variables and states
-    const { updateSizeName, deleteSize } = useFirestore();
+    const { updateSizeName, deleteSize, getPricesBySizeId, deletePrice } =
+        useFirestore();
 
     const [sizeName, setSizeName] = useState(size.name);
     const [editSizeError, setEditSizeError] = useState("");
@@ -56,6 +57,15 @@ const SizeListItem = ({ size, index }) => {
                 popup.classList.add("hidden");
             }
             if (action === "delete") {
+                // Get all prices for current size
+                const prices = await getPricesBySizeId(size.id);
+
+                // Delete all prices for current size
+                prices.forEach(async (price) => {
+                    // Delete price from Firestore
+                    await deletePrice(price.id);
+                });
+
                 // Delete the size from Firstore
                 await deleteSize(size.id);
             }

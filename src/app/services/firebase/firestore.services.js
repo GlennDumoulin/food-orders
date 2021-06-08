@@ -52,6 +52,7 @@ const FirestoreProvider = ({ children }) => {
      * @param {Number} postalCode
      * @param {String} city
      * @param {URL} thumbnailUrl
+     * @param {String} thumbnailPath
      * @returns null|error
      */
     const addRestaurant = async (
@@ -62,7 +63,8 @@ const FirestoreProvider = ({ children }) => {
         address,
         postalCode,
         city,
-        thumbnailUrl
+        thumbnailUrl,
+        thumbnailPath
     ) => {
         return db
             .collection("restaurants")
@@ -74,7 +76,10 @@ const FirestoreProvider = ({ children }) => {
                 address: address,
                 postalCode: postalCode,
                 city: city,
-                thumbnailUrl: thumbnailUrl,
+                thumbnail: {
+                    url: thumbnailUrl,
+                    path: thumbnailPath,
+                },
                 acceptingOrders: false,
             })
             .then((docRef) => {
@@ -217,16 +222,26 @@ const FirestoreProvider = ({ children }) => {
      * @param {String} name
      * @param {String} description
      * @param {Url} thumbnailUrl
+     * @param {String} thumbnailPath
      * @param {Id} restaurantId
      * @returns dishId|error
      */
-    const addDish = async (name, description, thumbnailUrl, restaurantId) => {
+    const addDish = async (
+        name,
+        description,
+        thumbnailUrl,
+        thumbnailPath,
+        restaurantId
+    ) => {
         return db
             .collection("dishes")
             .add({
                 name: name,
                 description: description,
-                thumbnailUrl: thumbnailUrl,
+                thumbnail: {
+                    url: thumbnailUrl,
+                    path: thumbnailPath,
+                },
                 restaurantId: restaurantId,
                 available: true,
             })
@@ -241,16 +256,26 @@ const FirestoreProvider = ({ children }) => {
      * @param {String} name
      * @param {String} description
      * @param {Url} thumbnailUrl
+     * @param {String} thumbnailPath
      * @returns null|error
      */
-    const updateDish = async (id, name, description, thumbnailUrl) => {
+    const updateDish = async (
+        id,
+        name,
+        description,
+        thumbnailUrl,
+        thumbnailPath
+    ) => {
         const dishRef = db.collection("dishes").doc(id);
 
         return dishRef
             .update({
                 name: name,
                 description: description,
-                thumbnailUrl: thumbnailUrl,
+                thumbnail: {
+                    url: thumbnailUrl,
+                    path: thumbnailPath,
+                },
             })
             .then((docRef) => {
                 return null;
@@ -301,6 +326,40 @@ const FirestoreProvider = ({ children }) => {
             id: price.id,
             ...price.data(),
         };
+    };
+
+    /**
+     * Get all prices by dishId from Firestore
+     * @param {Id} dishId
+     * @returns prices|error
+     */
+    const getPricesByDishId = async (dishId) => {
+        const query = db.collection("prices").where("dishId", "==", dishId);
+        const querySnapshot = await query.get();
+        const prices = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return prices;
+    };
+
+    /**
+     * Get all prices by sizeId from Firestore
+     * @param {Id} sizeId
+     * @returns prices|error
+     */
+    const getPricesBySizeId = async (sizeId) => {
+        const query = db.collection("prices").where("sizeId", "==", sizeId);
+        const querySnapshot = await query.get();
+        const prices = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return prices;
     };
 
     /**
@@ -452,6 +511,8 @@ const FirestoreProvider = ({ children }) => {
         updateDishAvailablity,
         deleteDish,
         getPriceById,
+        getPricesByDishId,
+        getPricesBySizeId,
         getPriceByDishAndSizeId,
         addPrice,
         updatePrice,

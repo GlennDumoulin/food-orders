@@ -128,7 +128,7 @@ export const ManageSizesPage = ({ children }) => {
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {!!sizes ? (
+                            {!!sizes && sizes.length > 0 ? (
                                 sizes.map((size, index) => {
                                     return (
                                         <SizeListItem

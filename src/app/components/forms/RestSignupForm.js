@@ -96,12 +96,16 @@ const RestSignupForm = ({ children }) => {
             const user = await signup(name, email, password);
 
             // Add logo to Cloud Storage
-            const thumbnailUrl = await uploadImg(
+            const thumbnailData = await uploadImg(
                 "logos",
                 name,
                 `logo-${name}`,
                 thumbnail
             );
+
+            // Get image url & path
+            const thumbnailUrl = thumbnailData.downloadUrl;
+            const thumbnailPath = thumbnailData.fullPath;
 
             // Add restaurant to Firestore
             await addRestaurant(
@@ -112,7 +116,8 @@ const RestSignupForm = ({ children }) => {
                 address,
                 postalCode,
                 city,
-                thumbnailUrl
+                thumbnailUrl,
+                thumbnailPath
             );
 
             // Redirect to Orders page

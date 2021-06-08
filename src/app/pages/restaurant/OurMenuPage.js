@@ -56,7 +56,7 @@ export const OurMenuPage = ({ children }) => {
                 </div>
             </div>
             <div className="dishes-list row">
-                {!!dishes ? (
+                {!!dishes && dishes.length > 0 ? (
                     dishes.map((dish) => (
                         <div className="col-6 col-md-4 col-lg-3" key={dish.id}>
                             <a
@@ -68,7 +68,7 @@ export const OurMenuPage = ({ children }) => {
                             >
                                 <div className="card">
                                     <img
-                                        src={dish.thumbnailUrl}
+                                        src={dish.thumbnail.url}
                                         alt={dish.name}
                                         className="card-thumbnail"
                                     />

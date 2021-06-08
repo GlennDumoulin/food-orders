@@ -208,12 +208,6 @@ textarea {
         border-radius: 8px;
         transition: $transition-standard;
     }
-    &-btns-container {
-        margin-top: 20px;
-        & button[type="submit"] {
-            margin-top: 0;
-        }
-    }
     &:hover {
         border-color: $color-primary--hover;
         & .overlay {

@@ -20,7 +20,7 @@ const StorageProvider = ({ children }) => {
      * @param {String} subfolder
      * @param {String} fileName
      * @param {Object} file
-     * @returns download url for uploaded image
+     * @returns downloadUrl & metadata|error
      */
     const uploadImg = async (folder, subfolder, fileName, file) => {
         const searchRegExp = new RegExp(" ", "g");
@@ -34,25 +34,23 @@ const StorageProvider = ({ children }) => {
 
         await fileRef.put(file);
 
-        return await fileRef.getDownloadURL();
+        const downloadUrl = await fileRef.getDownloadURL();
+        const metadata = await fileRef.getMetadata();
+
+        return {
+            downloadUrl: downloadUrl,
+            ...metadata,
+        };
     };
 
     /**
      * Delete an image from Cloud Storage
-     * @param {String} folder
-     * @param {String} subfolder
-     * @param {String} fileName
+     * @param {String} filePath
      * @returns null|error
      */
-    const deleteImg = async (folder, subfolder, fileName) => {
-        const searchRegExp = new RegExp(" ", "g");
+    const deleteImg = async (filePath) => {
         const storageRef = storage.ref();
-        const fileRef = storageRef.child(
-            `${folder}/${subfolder.replace(
-                searchRegExp,
-                "_"
-            )}/${fileName.replace(searchRegExp, "_")}`
-        );
+        const fileRef = storageRef.child(filePath);
 
         await fileRef.delete().then(() => {
             return null;

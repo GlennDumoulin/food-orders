@@ -44,18 +44,23 @@ export const NewDishPage = () => {
         if (!dish) {
             try {
                 // Add image to Cloud Storage
-                const thumbnailUrl = await uploadImg(
+                const thumbnailData = await uploadImg(
                     "dishes",
                     restaurantName,
                     name,
                     thumbnail
                 );
 
+                // Get image url & path
+                const thumbnailUrl = thumbnailData.downloadUrl;
+                const thumbnailPath = thumbnailData.fullPath;
+
                 // Add dish to Firestore
                 const dishId = await addDish(
                     name,
                     description,
                     thumbnailUrl,
+                    thumbnailPath,
                     restaurantId
                 );
 
@@ -73,18 +78,28 @@ export const NewDishPage = () => {
         } else {
             try {
                 // Delete previous image from Cloud Storage
-                await deleteImg("dishes", restaurantName, dish.name);
+                await deleteImg(dish.thumbnail.path);
 
                 // Add image to Cloud Storage
-                const thumbnailUrl = await uploadImg(
+                const thumbnailData = await uploadImg(
                     "dishes",
                     restaurantName,
                     name,
                     thumbnail
                 );
 
+                // Get image url & path
+                const thumbnailUrl = thumbnailData.downloadUrl;
+                const thumbnailPath = thumbnailData.fullPath;
+
                 // Update dish in Firestore
-                await updateDish(dish.id, name, description, thumbnailUrl);
+                await updateDish(
+                    dish.id,
+                    name,
+                    description,
+                    thumbnailUrl,
+                    thumbnailPath
+                );
 
                 // Get dish data from Firestore and set current dish
                 const updatedDish = await getDishById(dish.id);
@@ -269,7 +284,7 @@ export const NewDishPage = () => {
                 />
             </div>
             <h1>New Dish</h1>
-            {!!sizes ? (
+            {!!sizes && sizes.length > 0 ? (
                 <div className="dish-container row">
                     <div className="section col-12 col-md-6">
                         <h2>Info</h2>
