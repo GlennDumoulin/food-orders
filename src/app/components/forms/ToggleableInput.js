@@ -3,9 +3,10 @@ import React, { useState } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 
 // Toggleable input content
-const ToggleableInput = ({ size }) => {
+const ToggleableInput = ({ size, price = undefined }) => {
     // Define state
-    const [checked, setChecked] = useState(false);
+    const [checked, setChecked] = useState(price ? true : false);
+    const [value, setValue] = useState(price ? price.price : 0);
 
     return (
         <div className="form-group">
@@ -28,6 +29,8 @@ const ToggleableInput = ({ size }) => {
                         type="number"
                         step={0.01}
                         required
+                        value={value}
+                        onChange={(ev) => setValue(ev.target.value)}
                         name={`price-${size.name}`}
                         id={`price-${size.name}`}
                     />

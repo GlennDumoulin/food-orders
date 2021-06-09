@@ -175,14 +175,12 @@ export const NewDishPage = () => {
                 // Check if there is at least one value
                 if (values.length > 0) {
                     let updatedPrices = [];
-                    let formValues = values;
-                    let currentPrices = prices;
 
                     // Check all restaurant sizes if they have a price or not, then check
                     // submitted form for that size and update, delete or create depending on result
                     sizes.map(async (size) => {
                         // Search price in current prices array
-                        const price = currentPrices.find((price) => {
+                        const price = prices.find((price) => {
                             return (
                                 price.dishId === dish.id &&
                                 price.sizeId === size.id
@@ -191,17 +189,15 @@ export const NewDishPage = () => {
 
                         if (price) {
                             // Get the index of the sizeId from the submitted form data
-                            const valuesIndex = formValues.findIndex(
-                                (value) => {
-                                    return value === price.sizeId;
-                                }
-                            );
+                            const valuesIndex = values.findIndex((value) => {
+                                return value === price.sizeId;
+                            });
 
                             if (valuesIndex !== -1) {
                                 // If price and valuesIndex exist update price in Firestore
                                 await updatePrice(
                                     price.id,
-                                    parseFloat(formValues[valuesIndex + 1])
+                                    parseFloat(values[valuesIndex + 1])
                                 );
 
                                 // Get price data from Firestore and add to prices array
@@ -211,25 +207,23 @@ export const NewDishPage = () => {
                                 updatedPrices.push(updatedPrice);
 
                                 // Remove items from formdata array
-                                formValues.splice(valuesIndex, 2);
+                                values.splice(valuesIndex, 2);
                             } else {
                                 // If price exists delete price from Firestore
                                 await deletePrice(price.id);
                             }
                         } else {
                             // Get the index of the sizeId from the submitted form data
-                            const valuesIndex = formValues.findIndex(
-                                (value) => {
-                                    return value === size.id;
-                                }
-                            );
+                            const valuesIndex = values.findIndex((value) => {
+                                return value === size.id;
+                            });
 
                             if (valuesIndex !== -1) {
                                 // If valuesIndex exists add price to FireStore
                                 const priceId = await addPrice(
                                     dish.id,
-                                    formValues[valuesIndex],
-                                    parseFloat(formValues[valuesIndex + 1])
+                                    values[valuesIndex],
+                                    parseFloat(values[valuesIndex + 1])
                                 );
 
                                 // Get price data from Firestore and add to prices array

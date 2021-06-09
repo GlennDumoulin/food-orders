@@ -4,7 +4,7 @@ import React from "react";
 import { ToggleableInput } from "../../components/forms";
 
 // Show the form for prices of a dish
-const DishPricesForm = ({ sizes, dish, handleSubmit }) => {
+const DishPricesForm = ({ sizes, dish, prices = [], handleSubmit }) => {
     return dish ? (
         <form
             name="dish-prices"
@@ -13,7 +13,14 @@ const DishPricesForm = ({ sizes, dish, handleSubmit }) => {
             className="dish-prices"
         >
             {sizes.map((size) => {
-                return <ToggleableInput size={size} key={size.id} />;
+                // Search price in current prices array
+                const price = prices.find((price) => {
+                    return price.dishId === dish.id && price.sizeId === size.id;
+                });
+
+                return (
+                    <ToggleableInput size={size} price={price} key={size.id} />
+                );
             })}
             <button type="submit" className="fill">
                 Save prices changes

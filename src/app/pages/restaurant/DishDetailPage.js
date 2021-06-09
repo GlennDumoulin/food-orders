@@ -20,7 +20,10 @@ export const DishDetailPage = () => {
         updateDishAvailablity,
         updateDish,
         deleteDish,
+        getPriceById,
         getPricesByDishId,
+        addPrice,
+        updatePrice,
         deletePrice,
         getSizesByRestaurant,
         user,
@@ -147,7 +150,96 @@ export const DishDetailPage = () => {
         }
     };
 
-    const handlePricesSubmit = async () => {};
+    const handlePricesSubmit = async (ev) => {
+        ev.preventDefault();
+
+        // Get the formdata
+        const pricesForm = document.getElementById("dish-prices");
+        const formData = new FormData(pricesForm);
+
+        // Get the formdata values
+        let values = [];
+        for (let value of formData.values()) {
+            values.push(value);
+        }
+
+        try {
+            // Check if there is at least one value
+            if (values.length > 0) {
+                let updatedPrices = [];
+
+                // Check all restaurant sizes if they have a price or not, then check
+                // submitted form for that size and update, delete or create depending on result
+                sizes.map(async (size) => {
+                    // Search price in current prices array
+                    const price = prices.find((price) => {
+                        return (
+                            price.dishId === dish.id && price.sizeId === size.id
+                        );
+                    });
+
+                    if (price) {
+                        // Get the index of the sizeId from the submitted form data
+                        const valuesIndex = values.findIndex((value) => {
+                            return value === price.sizeId;
+                        });
+
+                        if (valuesIndex !== -1) {
+                            // If price and valuesIndex exist update price in Firestore
+                            await updatePrice(
+                                price.id,
+                                parseFloat(values[valuesIndex + 1])
+                            );
+
+                            // Get price data from Firestore and add to prices array
+                            const updatedPrice = await getPriceById(price.id);
+                            updatedPrices.push(updatedPrice);
+
+                            // Remove items from formdata array
+                            values.splice(valuesIndex, 2);
+                        } else {
+                            // If price exists delete price from Firestore
+                            await deletePrice(price.id);
+                        }
+                    } else {
+                        // Get the index of the sizeId from the submitted form data
+                        const valuesIndex = values.findIndex((value) => {
+                            return value === size.id;
+                        });
+
+                        if (valuesIndex !== -1) {
+                            // If valuesIndex exists add price to FireStore
+                            const priceId = await addPrice(
+                                dish.id,
+                                values[valuesIndex],
+                                parseFloat(values[valuesIndex + 1])
+                            );
+
+                            // Get price data from Firestore and add to prices array
+                            const newPrice = await getPriceById(priceId);
+                            updatedPrices.push(newPrice);
+                        }
+                    }
+                });
+
+                // Set current prices
+                setPrices(updatedPrices);
+
+                // Set success message
+                setPricesError("");
+                setPricesSuccess(
+                    "The prices for this dish were updated succesfully"
+                );
+            } else {
+                // Set error message
+                setPricesSuccess("");
+                setPricesError("Add at least 1 price to your dish");
+            }
+        } catch (error) {
+            setPricesSuccess("");
+            setPricesError(error.message);
+        }
+    };
 
     // Get current dish info from Firestore on page load
     useEffect(() => {
@@ -238,6 +330,7 @@ export const DishDetailPage = () => {
                             <DishPricesForm
                                 sizes={sizes}
                                 dish={dish}
+                                prices={prices}
                                 handleSubmit={handlePricesSubmit}
                             />
                             <span className="error">{pricesError}</span>
