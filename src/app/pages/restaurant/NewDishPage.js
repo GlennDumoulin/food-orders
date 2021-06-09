@@ -19,6 +19,7 @@ export const NewDishPage = () => {
         addPrice,
         updatePrice,
         deletePrice,
+        getSizeById,
         getSizesByRestaurant,
         user,
     } = useFirestore();
@@ -138,11 +139,15 @@ export const NewDishPage = () => {
                     let currentPrices = [];
 
                     do {
+                        // Get size from Firestore
+                        const size = await getSizeById(values[i]);
+
                         // Add price to FireStore
                         const priceId = await addPrice(
                             dish.id,
-                            values[i],
-                            parseFloat(values[i + 1])
+                            parseFloat(values[i + 1]),
+                            size.name,
+                            size.order
                         );
 
                         // Get price data from Firestore and add to prices array
@@ -222,8 +227,9 @@ export const NewDishPage = () => {
                                 // If valuesIndex exists add price to FireStore
                                 const priceId = await addPrice(
                                     dish.id,
-                                    values[valuesIndex],
-                                    parseFloat(values[valuesIndex + 1])
+                                    parseFloat(values[valuesIndex + 1]),
+                                    size.name,
+                                    size.order
                                 );
 
                                 // Get price data from Firestore and add to prices array
@@ -262,7 +268,7 @@ export const NewDishPage = () => {
                 setSizes(sizes);
             };
 
-            handleGetSizes();
+            return handleGetSizes();
         };
 
         // Stop listening to changes

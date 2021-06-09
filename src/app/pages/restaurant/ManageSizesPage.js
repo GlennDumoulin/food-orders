@@ -24,7 +24,7 @@ export const ManageSizesPage = ({ children }) => {
     const [saveChangesError, setSaveChangesError] = useState("");
 
     // Handle opening the add size popup & disable scrolling
-    const handleAddSizePopup = async () => {
+    const handleAddSizePopup = () => {
         const addSizePopup = document.getElementById("add-size");
         addSizePopup.classList.remove("hidden");
 
@@ -104,7 +104,7 @@ export const ManageSizesPage = ({ children }) => {
         };
 
         // Stop listening to changes
-        unsubscribe();
+        return unsubscribe();
     }, [user, db, restaurantId]);
 
     return (

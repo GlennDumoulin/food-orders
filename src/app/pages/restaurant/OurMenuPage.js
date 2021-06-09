@@ -27,7 +27,7 @@ export const OurMenuPage = ({ children }) => {
         };
 
         // Stop listening to changes
-        unsubscribe();
+        return unsubscribe();
     }, [getDishesByRestaurant, restaurantId]);
 
     return (

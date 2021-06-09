@@ -42,6 +42,55 @@ const FirestoreProvider = ({ children }) => {
             });
     };
 
+    // Get all available restaurants
+    const getRestaurants = async () => {
+        const query = db
+            .collection("restaurants")
+            .where("acceptingOrders", "==", true);
+        const querySnapshot = await query.get();
+
+        const restaurants = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return restaurants;
+    };
+
+    /**
+     * Get restaurant by id from Firestore
+     * @param {Id} id
+     * @returns restaurant|error
+     */
+    const getRestaurantById = async (id) => {
+        const restaurantRef = db.collection("restaurants").doc(id);
+        const restaurant = await restaurantRef.get();
+
+        return {
+            id: restaurant.id,
+            ...restaurant.data(),
+        };
+    };
+
+    /**
+     * Get a specified amount of restaurants from Firestore
+     * @param {Number} amount
+     * @returns restaurants|error
+     */
+    const getRecentRestaurants = async (amount) => {
+        const query = db.collection("restaurants").limit(amount);
+        const querySnapshot = await query.get();
+
+        const restaurants = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return restaurants;
+    };
+
     /**
      * Add restaurant to Firestore
      * @param {Id} id
@@ -70,7 +119,7 @@ const FirestoreProvider = ({ children }) => {
             .collection("restaurants")
             .doc(id)
             .set({
-                restaurantName: name,
+                name: name,
                 companyNumber: companyNumber,
                 email: email,
                 address: address,
@@ -85,6 +134,21 @@ const FirestoreProvider = ({ children }) => {
             .then((docRef) => {
                 return null;
             });
+    };
+
+    /**
+     * Get size by id from Firestore
+     * @param {Id} id
+     * @returns size|error
+     */
+    const getSizeById = async (id) => {
+        const sizeRef = db.collection("sizes").doc(id);
+        const size = await sizeRef.get();
+
+        return {
+            id: size.id,
+            ...size.data(),
+        };
     };
 
     /**
@@ -334,7 +398,10 @@ const FirestoreProvider = ({ children }) => {
      * @returns prices|error
      */
     const getPricesByDishId = async (dishId) => {
-        const query = db.collection("prices").where("dishId", "==", dishId);
+        const query = db
+            .collection("prices")
+            .where("dishId", "==", dishId)
+            .orderBy("order");
         const querySnapshot = await query.get();
         const prices = querySnapshot.docs.map((doc) => {
             return {
@@ -351,7 +418,10 @@ const FirestoreProvider = ({ children }) => {
      * @returns prices|error
      */
     const getPricesBySizeId = async (sizeId) => {
-        const query = db.collection("prices").where("sizeId", "==", sizeId);
+        const query = db
+            .collection("prices")
+            .where("sizeId", "==", sizeId)
+            .orderBy("order");
         const querySnapshot = await query.get();
         const prices = querySnapshot.docs.map((doc) => {
             return {
@@ -372,7 +442,8 @@ const FirestoreProvider = ({ children }) => {
         const query = db
             .collection("prices")
             .where("dishId", "==", dishId)
-            .where("sizeId", "==", sizeId);
+            .where("sizeId", "==", sizeId)
+            .orderBy("order");
         const querySnapshot = await query.get();
         const price = querySnapshot.docs.map((doc) => {
             return {
@@ -386,17 +457,19 @@ const FirestoreProvider = ({ children }) => {
     /**
      * Add a price to Firestore
      * @param {Id} dishId
-     * @param {Id} sizeId
      * @param {Number} price
+     * @param {String} sizeName
+     * @param {Number} order
      * @returns priceId|error
      */
-    const addPrice = async (dishId, sizeId, price) => {
+    const addPrice = async (dishId, price, sizeName, order) => {
         return db
             .collection("prices")
             .add({
                 dishId: dishId,
-                sizeId: sizeId,
                 price: price,
+                sizeName: sizeName,
+                order: order,
             })
             .then((docRef) => {
                 return docRef.id;
@@ -492,13 +565,18 @@ const FirestoreProvider = ({ children }) => {
                 setLoading(false);
             }
         });
+
         return () => unsubscribe();
     }, [auth, db]);
 
     // Return values
     const value = {
         addUser,
+        getRestaurants,
+        getRestaurantById,
+        getRecentRestaurants,
         addRestaurant,
+        getSizeById,
         getSizesByRestaurant,
         addSize,
         updateSizeOrder,

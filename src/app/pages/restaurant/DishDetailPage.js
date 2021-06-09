@@ -211,8 +211,9 @@ export const DishDetailPage = () => {
                             // If valuesIndex exists add price to FireStore
                             const priceId = await addPrice(
                                 dish.id,
-                                values[valuesIndex],
-                                parseFloat(values[valuesIndex + 1])
+                                parseFloat(values[valuesIndex + 1]),
+                                size.name,
+                                size.order
                             );
 
                             // Get price data from Firestore and add to prices array
@@ -260,7 +261,7 @@ export const DishDetailPage = () => {
         };
 
         // Stop listening to changes
-        unsubscribe();
+        return unsubscribe();
     }, [
         getDishById,
         id,

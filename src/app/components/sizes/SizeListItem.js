@@ -123,6 +123,7 @@ const SizeListItem = ({ size, index }) => {
                     <input
                         type="text"
                         name="name"
+                        required
                         value={sizeName}
                         onChange={(ev) => setSizeName(ev.target.value)}
                     />

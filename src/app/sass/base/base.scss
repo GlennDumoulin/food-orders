@@ -16,14 +16,21 @@ h5 {
     color: $color-black;
     font-family: $font-family-montserrat;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 h1 {
     font-size: 1.75rem;
+    &.no-margin {
+        margin-bottom: 0;
+    }
 }
 h2 {
     font-size: 1.5rem;
+    h1 + &,
+    button + & {
+        margin-top: 30px;
+    }
 }
 h3 {
     font-size: 1.375rem;
@@ -45,6 +52,10 @@ span {
     @media (min-width: 768px) {
         font-size: 1.25rem;
     }
+}
+
+p + button {
+    margin-top: 20px;
 }
 
 a {
@@ -74,7 +85,9 @@ li {
 }
 
 span {
-    &.small {
+    &.small,
+    &.error,
+    &.success {
         font-size: 0.75rem;
     }
     &.error {
@@ -141,6 +154,7 @@ button {
     }
     &.fill {
         width: 100%;
+        padding: 7px 0;
     }
     &.small {
         width: 50px;
@@ -209,6 +223,7 @@ textarea {
         transition: $transition-standard;
     }
     &:hover {
+        cursor: pointer;
         border-color: $color-primary--hover;
         & .overlay {
             background-color: $color-black--40;
