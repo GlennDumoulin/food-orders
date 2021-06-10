@@ -81,7 +81,13 @@ const UserSignupForm = ({ children }) => {
                 const { errors, touched, isValid, dirty } = formik;
                 return (
                     <Form className="register-form--user">
-                        <span className="error">{error}</span>
+                        {error ? (
+                            <span className="error">
+                                <Feather.AlertCircle /> {error}
+                            </span>
+                        ) : (
+                            ""
+                        )}
                         <div className="form-item">
                             <label htmlFor="name">Name</label>
                             <Field

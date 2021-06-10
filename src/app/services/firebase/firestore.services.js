@@ -1,5 +1,6 @@
 // Imports
 import React, { useContext, useState, useEffect } from "react";
+import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 
@@ -162,6 +163,7 @@ const FirestoreProvider = ({ children }) => {
             .where("restaurantId", "==", restaurantId)
             .orderBy("order");
         const querySnapshot = await query.get();
+
         const sizes = querySnapshot.docs.map((doc) => {
             return {
                 id: doc.id,
@@ -272,6 +274,7 @@ const FirestoreProvider = ({ children }) => {
             .where("restaurantId", "==", restaurantId)
             .orderBy("name");
         const querySnapshot = await query.get();
+
         const dishes = querySnapshot.docs.map((doc) => {
             return {
                 id: doc.id,
@@ -398,11 +401,9 @@ const FirestoreProvider = ({ children }) => {
      * @returns prices|error
      */
     const getPricesByDishId = async (dishId) => {
-        const query = db
-            .collection("prices")
-            .where("dishId", "==", dishId)
-            .orderBy("order");
+        const query = db.collection("prices").where("dishId", "==", dishId);
         const querySnapshot = await query.get();
+
         const prices = querySnapshot.docs.map((doc) => {
             return {
                 id: doc.id,
@@ -418,11 +419,9 @@ const FirestoreProvider = ({ children }) => {
      * @returns prices|error
      */
     const getPricesBySizeId = async (sizeId) => {
-        const query = db
-            .collection("prices")
-            .where("sizeId", "==", sizeId)
-            .orderBy("order");
+        const query = db.collection("prices").where("sizeId", "==", sizeId);
         const querySnapshot = await query.get();
+
         const prices = querySnapshot.docs.map((doc) => {
             return {
                 id: doc.id,
@@ -433,43 +432,19 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Get a price by dishId and sizeId from Firestore
-     * @param {Id} dishId
-     * @param {Id} sizeId
-     * @returns price|error
-     */
-    const getPriceByDishAndSizeId = async (dishId, sizeId) => {
-        const query = db
-            .collection("prices")
-            .where("dishId", "==", dishId)
-            .where("sizeId", "==", sizeId)
-            .orderBy("order");
-        const querySnapshot = await query.get();
-        const price = querySnapshot.docs.map((doc) => {
-            return {
-                id: doc.id,
-                ...doc.data(),
-            };
-        });
-        return price;
-    };
-
-    /**
      * Add a price to Firestore
      * @param {Id} dishId
+     * @param {Id} sizeId
      * @param {Number} price
-     * @param {String} sizeName
-     * @param {Number} order
      * @returns priceId|error
      */
-    const addPrice = async (dishId, price, sizeName, order) => {
+    const addPrice = async (dishId, sizeId, price) => {
         return db
             .collection("prices")
             .add({
                 dishId: dishId,
+                sizeId: sizeId,
                 price: price,
-                sizeName: sizeName,
-                order: order,
             })
             .then((docRef) => {
                 return docRef.id;
@@ -503,6 +478,137 @@ const FirestoreProvider = ({ children }) => {
         const priceRef = db.collection("prices").doc(id);
 
         return priceRef.delete().then((docRef) => {
+            return null;
+        });
+    };
+
+    /**
+     * Get an order by id from Firestore
+     * @param {Id} id
+     * @returns order|error
+     */
+    const getOrderById = async (id) => {
+        const orderRef = db.collection("orders").doc(id);
+        const order = await orderRef.get();
+
+        return {
+            id: order.id,
+            ...order.data(),
+        };
+    };
+
+    /**
+     * Get current order by user from Firestore
+     * @param {Id} userId
+     * @returns order|error
+     */
+    const getCurrentOrder = async (userId) => {
+        const query = db
+            .collection("orders")
+            .where("userId", "==", userId)
+            .where("status", "==", "Not yet placed");
+        const querySnapshot = await query.get();
+
+        const order = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return order;
+    };
+
+    /**
+     * Get all orders of the current user from Firestore
+     * @param {Id} userId
+     * @returns orders|error
+     */
+    const getOrdersByUser = async (userId) => {
+        const query = db.collection("orders").where("userId", "==", userId);
+        const querySnapshot = await query.get();
+
+        const orders = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return orders;
+    };
+
+    /**
+     * Get upcoming orders of the current user from Firestore
+     * @param {Id} userId
+     * @param {Number} amount
+     * @returns orders|error
+     */
+    const getUpcomingOrders = async (userId, amount) => {
+        const query = db
+            .collection("orders")
+            .where("userId", "==", userId)
+            .where("status", "in", ["Awaiting acceptance", "Accepted", "Done"])
+            .orderBy("pickupAt")
+            .limit(amount);
+        const querySnapshot = await query.get();
+
+        const orders = querySnapshot.docs.map((doc) => {
+            return {
+                id: doc.id,
+                ...doc.data(),
+            };
+        });
+        return orders;
+    };
+
+    /**
+     * Add an order to Firestore
+     * @param {Id} userId
+     * @param {ID} restaurantId
+     * @param {Array} orderContent
+     * @returns orderId|error
+     */
+    const addOrder = async (userId, restaurantId, orderContent) => {
+        return db
+            .collection("orders")
+            .add({
+                userId: userId,
+                restaurantId: restaurantId,
+                orderContent: orderContent,
+                status: "Not yet placed",
+                pickupAt: 0,
+            })
+            .then((docRef) => {
+                return docRef.id;
+            });
+    };
+
+    /**
+     * Update the content of an order in Firestore
+     * @param {Id} id
+     * @param {Object} item
+     * @returns null|error
+     */
+    const addOrderContent = async (id, item) => {
+        const orderRef = db.collection("orders").doc(id);
+
+        return orderRef
+            .update({
+                orderContent: firebase.firestore.FieldValue.arrayUnion(item),
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Delete an order from Firestore
+     * @param {Id} id
+     * @returns null|error
+     */
+    const deleteOrder = async (id) => {
+        const orderRef = db.collection("orders").doc(id);
+
+        return orderRef.delete().then((docRef) => {
             return null;
         });
     };
@@ -591,10 +697,16 @@ const FirestoreProvider = ({ children }) => {
         getPriceById,
         getPricesByDishId,
         getPricesBySizeId,
-        getPriceByDishAndSizeId,
         addPrice,
         updatePrice,
         deletePrice,
+        getOrderById,
+        getCurrentOrder,
+        getOrdersByUser,
+        getUpcomingOrders,
+        addOrder,
+        addOrderContent,
+        deleteOrder,
         user,
         type,
         loading,

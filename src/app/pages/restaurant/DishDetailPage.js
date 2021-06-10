@@ -211,9 +211,8 @@ export const DishDetailPage = () => {
                             // If valuesIndex exists add price to FireStore
                             const priceId = await addPrice(
                                 dish.id,
-                                parseFloat(values[valuesIndex + 1]),
-                                size.name,
-                                size.order
+                                values[valuesIndex],
+                                parseFloat(values[valuesIndex + 1])
                             );
 
                             // Get price data from Firestore and add to prices array
@@ -309,7 +308,13 @@ export const DishDetailPage = () => {
                             formId="delete-dish-form"
                             handleSubmit={(ev) => handleDeleteDish(ev)}
                         >
-                            <span className="error">{deleteDishError}</span>
+                            {deleteDishError ? (
+                                <span className="error">
+                                    <Feather.AlertCircle /> {deleteDishError}
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </Popup>
                     </div>
                     <div className="dish-container row">
@@ -323,8 +328,20 @@ export const DishDetailPage = () => {
                                 }}
                                 handleSubmit={handleInfoSubmit}
                             />
-                            <span className="error">{infoError}</span>
-                            <span className="success">{infoSuccess}</span>
+                            {infoError ? (
+                                <span className="error">
+                                    <Feather.AlertCircle /> {infoError}
+                                </span>
+                            ) : (
+                                ""
+                            )}
+                            {infoSuccess ? (
+                                <span className="success">
+                                    <Feather.CheckCircle /> {infoSuccess}
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </div>
                         <div className="section col-12 col-md-6">
                             <h2>Edit prices</h2>
@@ -334,8 +351,20 @@ export const DishDetailPage = () => {
                                 prices={prices}
                                 handleSubmit={handlePricesSubmit}
                             />
-                            <span className="error">{pricesError}</span>
-                            <span className="success">{pricesSuccess}</span>
+                            {pricesError ? (
+                                <span className="error">
+                                    <Feather.AlertCircle /> {pricesError}
+                                </span>
+                            ) : (
+                                ""
+                            )}
+                            {pricesSuccess ? (
+                                <span className="success">
+                                    <Feather.CheckCircle /> {pricesSuccess}
+                                </span>
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 </Fragment>

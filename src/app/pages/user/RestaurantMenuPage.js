@@ -61,7 +61,13 @@ export const RestaurantMenuPage = ({ children }) => {
                     <div className="dishes-list row">
                         {!!dishes && dishes.length > 0 ? (
                             dishes.map((dish) => {
-                                return <DishCard dish={dish} key={dish.id} />;
+                                return (
+                                    <DishCard
+                                        dish={dish}
+                                        restaurant={restaurant}
+                                        key={dish.id}
+                                    />
+                                );
                             })
                         ) : (
                             <h3>No dishes found</h3>

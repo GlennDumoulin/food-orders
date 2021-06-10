@@ -85,19 +85,26 @@ li {
 }
 
 span {
-    &.small,
-    &.error,
-    &.success {
-        font-size: 0.75rem;
+    &.small {
+        font-size: 0.75rem !important;
     }
     &.error {
         display: block;
+        font-size: 1rem;
         color: $color-danger;
     }
     &.success {
         display: block;
+        font-size: 1rem;
         color: $color-confirm;
     }
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 button {
@@ -197,12 +204,6 @@ textarea {
             font-size: 1.125rem;
         }
     }
-    &-thumbnail {
-        width: 100%;
-        height: 100%;
-        border-radius: 8px;
-        object-fit: cover;
-    }
     &-title {
         position: absolute;
         color: $color-white;
@@ -214,10 +215,10 @@ textarea {
     }
     & .overlay {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        top: -1px;
+        left: -1px;
+        width: calc(100% + 2px);
+        height: calc(100% + 2px);
         background-color: $color-black--60;
         border-radius: 8px;
         transition: $transition-standard;
@@ -295,12 +296,6 @@ textarea {
             }
             &.success {
                 border-color: $color-confirm;
-            }
-            & .upload-thumbnail {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                border-radius: 10px;
             }
         }
         & i {

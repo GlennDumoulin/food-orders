@@ -59,7 +59,13 @@ const LoginForm = ({ children }) => {
                 const { errors, touched, isValid, dirty } = formik;
                 return (
                     <Form className="login-form">
-                        <span className="error">{error}</span>
+                        {error ? (
+                            <span className="error">
+                                <Feather.AlertCircle /> {error}
+                            </span>
+                        ) : (
+                            ""
+                        )}
                         <div className="form-item">
                             <label htmlFor="email">Email</label>
                             <Field

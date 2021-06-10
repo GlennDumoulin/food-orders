@@ -164,7 +164,13 @@ const RestSignupForm = ({ children }) => {
                 } = formik;
                 return (
                     <Form className="register-form--restaurant">
-                        <span className="error">{error}</span>
+                        {error ? (
+                            <span className="error">
+                                <Feather.AlertCircle /> {error}
+                            </span>
+                        ) : (
+                            ""
+                        )}
                         <div className="form-item">
                             <label htmlFor="name">Name</label>
                             <Field

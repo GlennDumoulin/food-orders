@@ -156,8 +156,20 @@ export const ManageSizesPage = ({ children }) => {
             >
                 Save order changes
             </button>
-            <span className="success">{msg}</span>
-            <span className="error">{saveChangesError}</span>
+            {saveChangesError ? (
+                <span className="error">
+                    <Feather.AlertCircle /> {saveChangesError}
+                </span>
+            ) : (
+                ""
+            )}
+            {msg ? (
+                <span className="success">
+                    <Feather.CheckCircle /> {msg}
+                </span>
+            ) : (
+                ""
+            )}
             <Popup
                 popupId="add-size"
                 title="Add size"
@@ -168,7 +180,13 @@ export const ManageSizesPage = ({ children }) => {
                     <label htmlFor="name">Name</label>
                     <input type="text" name="name" required />
                 </div>
-                <span className="error">{addSizeError}</span>
+                {addSizeError ? (
+                    <span className="error">
+                        <Feather.AlertCircle /> {addSizeError}
+                    </span>
+                ) : (
+                    ""
+                )}
             </Popup>
         </div>
     );

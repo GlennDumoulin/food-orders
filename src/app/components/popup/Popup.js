@@ -1,5 +1,6 @@
 // Imports
 import React from "react";
+import * as Feather from "react-feather";
 
 import "./Popup.scss";
 
@@ -20,6 +21,7 @@ const Popup = ({
     },
     formId,
     handleSubmit,
+    bottomError = "",
     children,
 }) => {
     // Handle closing the popup & enable scrolling
@@ -61,6 +63,13 @@ const Popup = ({
                             </button>
                         </div>
                     </div>
+                    {bottomError ? (
+                        <span className="error">
+                            <Feather.AlertCircle /> {bottomError}
+                        </span>
+                    ) : (
+                        ""
+                    )}
                 </form>
             </div>
         </div>

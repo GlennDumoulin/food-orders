@@ -128,7 +128,13 @@ const SizeListItem = ({ size, index }) => {
                         onChange={(ev) => setSizeName(ev.target.value)}
                     />
                 </div>
-                <span className="error">{editSizeError}</span>
+                {editSizeError ? (
+                    <span className="error">
+                        <Feather.AlertCircle /> {editSizeError}
+                    </span>
+                ) : (
+                    ""
+                )}
             </Popup>
             <Popup
                 popupId={`delete-size-${size.id}`}
@@ -137,7 +143,13 @@ const SizeListItem = ({ size, index }) => {
                 formId={`edit-size-form-${size.id}`}
                 handleSubmit={(ev) => handleSubmit(ev, "delete")}
             >
-                <span className="error">{deleteSizeError}</span>
+                {deleteSizeError ? (
+                    <span className="error">
+                        <Feather.AlertCircle /> {deleteSizeError}
+                    </span>
+                ) : (
+                    ""
+                )}
             </Popup>
         </Fragment>
     );
