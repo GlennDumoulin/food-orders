@@ -22,6 +22,21 @@ const FirestoreProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     /**
+     * Get user by id from Firestore
+     * @param {Id} id
+     * @returns user|error
+     */
+    const getUserById = async (id) => {
+        const userRef = db.collection("users").doc(id);
+        const user = await userRef.get();
+
+        return {
+            id: user.id,
+            ...user.data(),
+        };
+    };
+
+    /**
      * Add user to Firestore
      * @param {Id} id
      * @param {String} name
@@ -737,6 +752,7 @@ const FirestoreProvider = ({ children }) => {
 
     // Return values
     const value = {
+        getUserById,
         addUser,
         getRestaurants,
         getRestaurantById,

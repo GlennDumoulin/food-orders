@@ -1,2 +1,16 @@
 .page--my-account {
+    & .btns-container {
+        & #LoginWithAmazon {
+            display: block;
+            width: 234px;
+            height: 48px;
+            margin-top: 10px;
+            &:hover {
+                cursor: pointer;
+            }
+            @media (min-width: 768px) {
+                margin-top: 0;
+            }
+        }
+    }
 }
