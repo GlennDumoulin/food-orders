@@ -527,7 +527,10 @@ const FirestoreProvider = ({ children }) => {
      * @returns orders|error
      */
     const getOrdersByUser = async (userId) => {
-        const query = db.collection("orders").where("userId", "==", userId);
+        const query = db
+            .collection("orders")
+            .where("userId", "==", userId)
+            .orderBy("pickupAt");
         const querySnapshot = await query.get();
 
         const orders = querySnapshot.docs.map((doc) => {
