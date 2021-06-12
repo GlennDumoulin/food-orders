@@ -11,7 +11,7 @@ const useAuth = () => useContext(AuthContext);
 
 // Create Provider for Authentication
 const AuthProvider = ({ children }) => {
-    // Define variables
+    // Defining variables
     const { app } = useFirebase();
     const auth = app.auth();
 

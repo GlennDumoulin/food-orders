@@ -10,7 +10,7 @@ const useStorage = () => useContext(StorageContext);
 
 // Create Provider for Cloud Storage
 const StorageProvider = ({ children }) => {
-    // Define variables
+    // Defining variables
     const { app } = useFirebase();
     const storage = app.storage();
 

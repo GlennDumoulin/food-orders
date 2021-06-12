@@ -12,7 +12,7 @@ const useFirestore = () => useContext(FirestoreContext);
 
 // Create Provider for Firestore
 const FirestoreProvider = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { app } = useFirebase();
     const db = app.firestore();
     const auth = app.auth();
@@ -399,7 +399,7 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Get all prices by dishId from Firestore
+     * Get all prices from a dish from Firestore
      * @param {Id} dishId
      * @returns prices|error
      */

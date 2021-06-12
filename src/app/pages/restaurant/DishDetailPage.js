@@ -13,7 +13,7 @@ import "./DishDetailPage.scss";
 
 // Page content
 export const DishDetailPage = () => {
-    // Define variables and states
+    // Defining variables and states
     const { id } = useParams();
     const {
         getDishById,
@@ -83,7 +83,7 @@ export const DishDetailPage = () => {
             // Delete dish from Firestore
             await deleteDish(dish.id);
 
-            // Enable scrolling
+            // Enable scrolling & redirect to our menu page
             const body = document.body;
             body.style.overflowX = "hidden";
             body.style.overflowY = "auto";
@@ -269,6 +269,7 @@ export const DishDetailPage = () => {
         getPricesByDishId,
     ]);
 
+    // Redirect if the dish does not exist
     if (!loading && !dish.name) window.location.assign(Routes.OUR_MENU);
 
     return (

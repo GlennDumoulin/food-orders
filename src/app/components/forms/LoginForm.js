@@ -21,7 +21,7 @@ const loginValidationSchema = Yup.object().shape({
 
 // Show the form for logging in
 const LoginForm = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { login } = useAuth();
 
     const [error, setError] = useState("");

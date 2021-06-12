@@ -67,7 +67,7 @@ const restSignupValidationSchema = Yup.object().shape({
 
 // Show the form for restaurant signup
 const RestSignupForm = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { signup } = useAuth();
     const { addRestaurant } = useFirestore();
     const { uploadImg } = useStorage();

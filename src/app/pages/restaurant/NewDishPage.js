@@ -10,7 +10,7 @@ import "./NewDishPage.scss";
 
 // Page content
 export const NewDishPage = () => {
-    // Define variables and states
+    // Defining variables and states
     const {
         getDishById,
         addDish,

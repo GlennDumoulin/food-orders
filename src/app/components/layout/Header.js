@@ -10,7 +10,7 @@ import "./Header.scss";
 
 // Header content
 const Header = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { logout } = useAuth();
     const { type, loading } = useFirestore();
 

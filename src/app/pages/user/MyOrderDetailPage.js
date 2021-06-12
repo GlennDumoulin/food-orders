@@ -54,7 +54,7 @@ export const MyOrderDetailPage = ({ children }) => {
     };
 
     /**
-     * Handle submitting update/delete of a item to Firestore
+     * Handle submitting place/delete/cancel of an order to Firestore
      * @param {Event} ev
      * @param {String} action
      * @returns null|error
@@ -94,7 +94,7 @@ export const MyOrderDetailPage = ({ children }) => {
                 // Delete the order from Firstore
                 await deleteOrder(order.id);
 
-                // Enable scrolling
+                // Enable scrolling & redirect to my orders page
                 const body = document.body;
                 body.style.overflowX = "hidden";
                 body.style.overflowY = "auto";
@@ -129,6 +129,11 @@ export const MyOrderDetailPage = ({ children }) => {
         const hours = pickupAt.getHours();
         const minutes = pickupAt.getMinutes();
 
+        /**
+         * Add a zero in front of the value if it is smaller than 10
+         * @param {Number} value
+         * @returns value
+         */
         const addZero = (value) => {
             if (value < 10) {
                 return "0" + value;
@@ -188,6 +193,7 @@ export const MyOrderDetailPage = ({ children }) => {
         return unsubscribe;
     }, [db, id, getPriceById, getRestaurantById]);
 
+    // Redirect if the order does not exist
     if (!loading && !order.id) window.location.assign(Routes.MY_ORDERS);
 
     return (

@@ -10,7 +10,7 @@ import "./SizeListItem.scss";
 
 // Size list item content
 const SizeListItem = ({ size, index }) => {
-    // Define variables and states
+    // Defining variables and states
     const { updateSizeName, deleteSize, getPricesBySizeId, deletePrice } =
         useFirestore();
 

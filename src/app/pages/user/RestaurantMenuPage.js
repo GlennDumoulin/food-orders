@@ -38,6 +38,7 @@ export const RestaurantMenuPage = ({ children }) => {
         return unsubscribe();
     }, [getRestaurantById, getDishesByRestaurant, id]);
 
+    // Redirect if the restaurant does not exist
     if (!loading && !restaurant.name)
         window.location.assign(Routes.RESTAURANTS);
 

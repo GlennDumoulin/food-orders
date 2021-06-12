@@ -9,7 +9,7 @@ import "./Footer.scss";
 
 // Footer content
 const Footer = ({ children }) => {
-    // Define variables
+    // Defining variables
     const { type, loading } = useFirestore();
 
     return (

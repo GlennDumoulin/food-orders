@@ -29,7 +29,7 @@ const userSignupValidationSchema = Yup.object().shape({
 
 // Show the form for the user signup
 const UserSignupForm = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { signup } = useAuth();
     const { addUser } = useFirestore();
 

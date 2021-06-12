@@ -4,7 +4,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 
 // Toggleable input content
 const ToggleableInput = ({ size, price = undefined }) => {
-    // Define state
+    // Defining state
     const [checked, setChecked] = useState(price ? true : false);
     const [value, setValue] = useState(price ? price.price : 0);
 

@@ -12,7 +12,7 @@ import "./ManageSizesPage.scss";
 
 // Page content
 export const ManageSizesPage = ({ children }) => {
-    // Define variables and states
+    // Defining variables and states
     const { app } = useFirebase();
     const db = app.firestore();
     const { addSize, updateSizeOrder, user } = useFirestore();
