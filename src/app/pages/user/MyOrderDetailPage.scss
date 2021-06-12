@@ -1,2 +1,20 @@
 .page--my-order-detail {
+    & .status {
+        margin-bottom: 20px;
+    }
+    & .total-price {
+        margin-top: 20px;
+    }
+    & .btns-container {
+        margin-top: 30px;
+    }
+    @media (min-width: 768px) {
+        & .order-content-list {
+            &--item {
+                & > button {
+                    height: 100px;
+                }
+            }
+        }
+    }
 }

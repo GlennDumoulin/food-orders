@@ -65,6 +65,8 @@ a {
     }
 }
 
+h3,
+h4,
 h5,
 p,
 a,
@@ -284,6 +286,30 @@ textarea {
             }
             & .MuiSwitch-colorSecondary.Mui-checked .MuiSwitch-thumb {
                 background-color: $color-primary;
+            }
+        }
+        &.time-picker {
+            & label {
+                display: block;
+            }
+            & .MuiFormControl-root {
+                width: 100%;
+                &:focus-visible {
+                    outline: none;
+                }
+            }
+            & .MuiInputBase-root {
+                width: 100%;
+                border: 1px solid $color-primary;
+                border-radius: 10px;
+                padding: 7px 20px;
+            }
+            & .MuiInput-underline {
+                &::before,
+                &::after,
+                &:hover::before {
+                    border-bottom: none;
+                }
             }
         }
         & .thumbnail-preview {

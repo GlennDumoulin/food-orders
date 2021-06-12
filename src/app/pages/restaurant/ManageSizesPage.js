@@ -104,8 +104,8 @@ export const ManageSizesPage = ({ children }) => {
         };
 
         // Stop listening to changes
-        return unsubscribe();
-    }, [user, db, restaurantId]);
+        return unsubscribe;
+    }, [db, restaurantId]);
 
     return (
         <div className="page page--manage-sizes">

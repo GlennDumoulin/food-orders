@@ -69,7 +69,7 @@ export const MyOverviewPage = ({ children }) => {
             >
                 View all orders
             </button>
-            <h2>Recent restaurants</h2>
+            <h2>New restaurants</h2>
             <div className="restaurants-list row justify-content-between">
                 {!!restaurants &&
                     restaurants.length > 0 &&
@@ -81,11 +81,12 @@ export const MyOverviewPage = ({ children }) => {
                                     restaurant.id
                                 )}
                             >
-                                <div className="restaurants-list--item">
+                                <div className="restaurants-list--item card">
                                     <img
                                         src={restaurant.thumbnail.url}
                                         alt={restaurant.name}
                                     />
+                                    <div className="overlay"></div>
                                 </div>
                             </a>
                         </div>

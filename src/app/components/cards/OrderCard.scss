@@ -1,0 +1,27 @@
+@import "../../App.scss";
+
+.orders-list--item {
+    & .card {
+        & .status-container {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            padding: 2px 15px;
+            border-radius: 0 7px 0 10px;
+            background-color: $color-primary;
+        }
+        & .info {
+            &-container {
+                position: absolute;
+                bottom: 7px;
+                left: 10px;
+            }
+            &-pickup {
+                color: $color-primary;
+            }
+            &-restaurant {
+                color: $color-white;
+            }
+        }
+    }
+}

@@ -266,7 +266,7 @@ export const NewDishPage = () => {
         };
 
         // Stop listening to changes
-        unsubscribe();
+        return unsubscribe();
     }, [getSizesByRestaurant, restaurantId]);
 
     return (

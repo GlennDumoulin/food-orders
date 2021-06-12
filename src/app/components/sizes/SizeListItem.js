@@ -140,7 +140,7 @@ const SizeListItem = ({ size, index }) => {
                 popupId={`delete-size-${size.id}`}
                 title="Are you sure you want to delete this size?"
                 description={size.name}
-                formId={`edit-size-form-${size.id}`}
+                formId={`delete-size-form-${size.id}`}
                 handleSubmit={(ev) => handleSubmit(ev, "delete")}
             >
                 {deleteSizeError ? (

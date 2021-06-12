@@ -6,31 +6,6 @@
         margin-top: 10px;
         margin-bottom: 30px;
     }
-    & .orders-list {
-        &--item {
-            & .card {
-                & .status-container {
-                    position: absolute;
-                    top: -1px;
-                    right: -1px;
-                    padding: 2px 15px;
-                    border-radius: 0 7px 0 10px;
-                    background-color: $color-primary;
-                }
-                & .info-container {
-                    position: absolute;
-                    bottom: 0;
-                    left: 5px;
-                    & h4 {
-                        color: $color-white;
-                    }
-                    & h5 {
-                        color: $color-primary;
-                    }
-                }
-            }
-        }
-    }
     & .restaurants-list {
         &--item {
             width: 100%;

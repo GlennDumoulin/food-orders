@@ -1,2 +1,6 @@
 .page--my-orders {
+    & .orders-list {
+        margin-top: 10px;
+        margin-bottom: 30px;
+    }
 }

@@ -58,21 +58,28 @@ export const RestaurantMenuPage = ({ children }) => {
                         {restaurant.address}, <br /> {restaurant.postalCode}{" "}
                         {restaurant.city}
                     </h3>
-                    <div className="dishes-list row">
-                        {!!dishes && dishes.length > 0 ? (
-                            dishes.map((dish) => {
-                                return (
-                                    <DishCard
-                                        dish={dish}
-                                        restaurant={restaurant}
-                                        key={dish.id}
-                                    />
-                                );
-                            })
-                        ) : (
-                            <h3>No dishes found</h3>
-                        )}
-                    </div>
+                    {restaurant.acceptingOrders ? (
+                        <div className="dishes-list row">
+                            {!!dishes && dishes.length > 0 ? (
+                                dishes.map((dish) => {
+                                    return (
+                                        <DishCard
+                                            dish={dish}
+                                            restaurant={restaurant}
+                                            key={dish.id}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <h3>No dishes found</h3>
+                            )}
+                        </div>
+                    ) : (
+                        <p>
+                            We are currently not accepting any orders. Please
+                            try again later.
+                        </p>
+                    )}
                 </Fragment>
             )}
         </div>

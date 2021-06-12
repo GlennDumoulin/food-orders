@@ -28,11 +28,17 @@ const DishCard = ({ dish, restaurant }) => {
     const [dishSuccess, setDishSuccess] = useState("");
     const [orderError, setOrderError] = useState("");
 
-    /**
-     * Handle opening a dish popup & disable scrolling
-     * @param {Id} id
-     */
+    // Handle opening a dish popup & disable scrolling
     const handlePopup = async () => {
+        // Set error message if current order is from a different restaurant
+        if (order && order.restaurantId !== restaurant.id) {
+            setOrderError(
+                "Adding this item will delete your current order and start a new one for this restaurant."
+            );
+        } else {
+            setOrderError("");
+        }
+
         // Remove notifications
         setDishError("");
         setDishSuccess("");
@@ -108,7 +114,7 @@ const DishCard = ({ dish, restaurant }) => {
                         // Set order content item
                         const item = {
                             priceId: values[0],
-                            amount: values[1],
+                            amount: parseInt(values[1]),
                         };
 
                         // Add dish to current order in Firestore
@@ -166,13 +172,6 @@ const DishCard = ({ dish, restaurant }) => {
                 if (!loading) {
                     // Get current order
                     order = await getCurrentOrder(user.uid);
-                }
-
-                // Set error message if current order is from a different restaurant
-                if (order[0] && order[0].restaurantId !== restaurant.id) {
-                    setOrderError(
-                        "Adding this item will delete your current order and start a new one for this restaurant."
-                    );
                 }
 
                 // Set current prices and order

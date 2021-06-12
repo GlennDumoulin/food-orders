@@ -80,7 +80,10 @@ const FirestoreProvider = ({ children }) => {
      * @returns restaurants|error
      */
     const getRecentRestaurants = async (amount) => {
-        const query = db.collection("restaurants").limit(amount);
+        const query = db
+            .collection("restaurants")
+            .where("acceptingOrders", "==", true)
+            .limit(amount);
         const querySnapshot = await query.get();
 
         const restaurants = querySnapshot.docs.map((doc) => {
@@ -563,7 +566,7 @@ const FirestoreProvider = ({ children }) => {
     /**
      * Add an order to Firestore
      * @param {Id} userId
-     * @param {ID} restaurantId
+     * @param {Id} restaurantId
      * @param {Array} orderContent
      * @returns orderId|error
      */
@@ -583,7 +586,43 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Update the content of an order in Firestore
+     * Update the status of an order in Firestore
+     * @param {Id} id
+     * @param {String} status
+     * @returns null|error
+     */
+    const updateOrderStatus = async (id, status) => {
+        const orderRef = db.collection("orders").doc(id);
+
+        return orderRef
+            .update({
+                status: status,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Update the pickup time of an order in Firestore
+     * @param {Id} id
+     * @param {Date} pickup
+     * @returns null|error
+     */
+    const updateOrderPickup = async (id, pickup) => {
+        const orderRef = db.collection("orders").doc(id);
+
+        return orderRef
+            .update({
+                pickupAt: pickup,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Add item to the content of an order in Firestore
      * @param {Id} id
      * @param {Object} item
      * @returns null|error
@@ -594,6 +633,24 @@ const FirestoreProvider = ({ children }) => {
         return orderRef
             .update({
                 orderContent: firebase.firestore.FieldValue.arrayUnion(item),
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Delete item from the content of an order in Firestore
+     * @param {Id} id
+     * @param {Object} item
+     * @returns null|error
+     */
+    const deleteOrderContent = async (id, item) => {
+        const orderRef = db.collection("orders").doc(id);
+
+        return orderRef
+            .update({
+                orderContent: firebase.firestore.FieldValue.arrayRemove(item),
             })
             .then((docRef) => {
                 return null;
@@ -705,7 +762,10 @@ const FirestoreProvider = ({ children }) => {
         getOrdersByUser,
         getUpcomingOrders,
         addOrder,
+        updateOrderStatus,
+        updateOrderPickup,
         addOrderContent,
+        deleteOrderContent,
         deleteOrder,
         user,
         type,

@@ -1,0 +1,52 @@
+@import "../../App.scss";
+
+.order-content-list--item {
+    &.card {
+        height: 100px;
+        & .thumbnail {
+            width: 75px;
+            height: 95px;
+            margin-left: -0.5px;
+            margin-right: 5px;
+            & img {
+                border-radius: 8px 0 0 8px;
+            }
+            @media (min-width: 992px) {
+                width: 100px;
+                margin-right: 10px;
+            }
+            @media (min-width: 1200px) {
+                width: 120px;
+            }
+        }
+        & .info {
+            &-title,
+            &-price {
+                margin-bottom: 0;
+            }
+            @media (min-width: 768px) {
+                &-price {
+                    margin-top: 5px;
+                }
+            }
+            @media (min-width: 992px) {
+                &-price {
+                    margin-top: 10px;
+                }
+            }
+        }
+        & .item-btns {
+            margin-right: -3px;
+            & .edit-item {
+                border-radius: 0 10px 0 0;
+            }
+            & .delete-item {
+                border-radius: 0 0 10px 0;
+            }
+        }
+        &:hover {
+            cursor: default;
+            border-color: $color-primary;
+        }
+    }
+}
