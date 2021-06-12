@@ -1,6 +1,6 @@
 // Imports
 import React from "react";
-import { HashRouter as Router, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Switch } from "react-router-dom";
 
 import { BaseLayout } from "../../layouts";
 import * as Pages from "../../pages";
