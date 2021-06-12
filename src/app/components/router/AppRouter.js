@@ -10,7 +10,7 @@ import { RouteWithLayout } from "../../utilities";
 // App Router
 const AppRouter = () => {
     return (
-        <Router basename={"/food-orders-6c7b1.web.app"}>
+        <Router basename={"/food-orders.netlify.app"}>
             <Switch>
                 <RouteWithLayout
                     exact
