@@ -80,10 +80,16 @@ span {
 ul {
     margin: 0;
     padding: 0;
+    & li {
+        list-style: none;
+    }
 }
 
-li {
-    list-style: none;
+ol {
+    margin: 0;
+    & li {
+        font-size: 1rem;
+    }
 }
 
 span {

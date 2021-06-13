@@ -50,8 +50,26 @@ const FirestoreProvider = ({ children }) => {
             .set({
                 name: name,
                 email: email,
-                linkedAlexaEmail: "",
+                accessToken: "",
                 isAdmin: false,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
+     * Update access token of a user in Firestore
+     * @param {Id} id
+     * @param {String} accesToken
+     * @returns null|error
+     */
+    const updateUserAccessToken = async (id, accesToken) => {
+        const userRef = db.collection("users").doc(id);
+
+        return userRef
+            .update({
+                accessToken: accesToken,
             })
             .then((docRef) => {
                 return null;
@@ -754,6 +772,7 @@ const FirestoreProvider = ({ children }) => {
     const value = {
         getUserById,
         addUser,
+        updateUserAccessToken,
         getRestaurants,
         getRestaurantById,
         getRecentRestaurants,

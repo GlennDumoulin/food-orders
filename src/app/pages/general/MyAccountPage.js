@@ -8,8 +8,14 @@ import "./MyAccountPage.scss";
 // Page content
 export const MyAccountPage = ({ children }) => {
     // Defining variables and states
-    const { getUserById, getRestaurantById, type, user, loading } =
-        useFirestore();
+    const {
+        getUserById,
+        getRestaurantById,
+        updateUserAccessToken,
+        type,
+        user,
+        loading,
+    } = useFirestore();
 
     const [currentUser, setCurrentUser] = useState();
     const [loadingUser, setLoadingUser] = useState(true);
@@ -26,49 +32,34 @@ export const MyAccountPage = ({ children }) => {
                 return;
             }
             // eslint-disable-next-line
-            amazon.Login.retrieveToken(response.code, (response) => {
+            amazon.Login.retrieveToken(response.code, async (response) => {
                 if (response.error) {
                     alert("oauth error " + response.error);
                     return;
                 }
-                // eslint-disable-next-line
-                amazon.Login.retrieveProfile(
-                    response.access_token,
-                    (response) => {
-                        alert("Hello, " + response.profile.Name);
-                        alert(
-                            "Your e-mail address is " +
-                                response.profile.PrimaryEmail
-                        );
-                        alert(
-                            "Your unique ID is " + response.profile.CustomerId
-                        );
-                        console.log(response);
 
-                        // hide LWA button & show unlink button
-                        const LWA = document.getElementById("LoginWithAmazon");
-                        const logout = document.getElementById("Logout");
+                // Add Amazon access token of a user to FireStore
+                await updateUserAccessToken(user.uid, response.access_token);
 
-                        LWA.classList.add("hidden");
-                        logout.classList.remove("hidden");
-                    }
-                );
+                // Get updated user from Firestore and set current user
+                const updatedUser = await getUserById(user.uid);
+                setCurrentUser(updatedUser);
             });
             return false;
         });
     };
 
     // Handle unlinking Alexa
-    const handleLogout = () => {
+    const handleLogout = async () => {
         // eslint-disable-next-line
         amazon.Login.logout();
 
-        // hide unlink button & show LWA button
-        const LWA = document.getElementById("LoginWithAmazon");
-        const logout = document.getElementById("Logout");
+        // Delete Amazon access token of a user from FireStore
+        await updateUserAccessToken(user.uid, "");
 
-        LWA.classList.remove("hidden");
-        logout.classList.add("hidden");
+        // Get updated user from Firestore and set current user
+        const updatedUser = await getUserById(user.uid);
+        setCurrentUser(updatedUser);
     };
 
     // Get the current user data on page load
@@ -134,10 +125,32 @@ export const MyAccountPage = ({ children }) => {
                         </Fragment>
                     )}
                     {type === "user" && (
-                        <p className="alexa-msg">
-                            By login in with Amazon you can start creating and
-                            managing your orders using Amazon Alexa.
-                        </p>
+                        <div className="alexa-msg">
+                            <p>
+                                If you want to start creating and managing your
+                                orders using an Amazon Alexa you will have to
+                                complete a few steps.
+                            </p>
+                            <ol>
+                                <li>
+                                    First of all open your Alexa app and search
+                                    for the skill called Food Orders.
+                                </li>
+                                <li>
+                                    Then you have to open the settings and link
+                                    your account.
+                                </li>
+                                <li>
+                                    After you linked your account to the skill
+                                    click the login with Amazon button below and
+                                    complete the login.
+                                </li>
+                            </ol>
+                            <p>
+                                If you completed all of these steps you should
+                                be able to get to work.
+                            </p>
+                        </div>
                     )}
                     <div className="btns-container row justify-content-between align-items-center">
                         <div className="col-12 col-md-6">
@@ -150,24 +163,26 @@ export const MyAccountPage = ({ children }) => {
                         </div>
                         {type === "user" && (
                             <div className="col-12 col-md-6">
-                                <button
-                                    type="button"
-                                    id="LoginWithAmazon"
-                                    onClick={handleLWA}
-                                >
-                                    <img
-                                        src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_312x64.png"
-                                        alt="Login with Amazon"
-                                    />
-                                </button>
-                                <button
-                                    type="button"
-                                    id="Logout"
-                                    onClick={handleLogout}
-                                    className="hidden"
-                                >
-                                    Unlink Alexa
-                                </button>
+                                {currentUser.accessToken === "" ? (
+                                    <button
+                                        type="button"
+                                        id="LoginWithAmazon"
+                                        onClick={handleLWA}
+                                    >
+                                        <img
+                                            src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_312x64.png"
+                                            alt="Login with Amazon"
+                                        />
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        id="Logout"
+                                        onClick={handleLogout}
+                                    >
+                                        Logout
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>
