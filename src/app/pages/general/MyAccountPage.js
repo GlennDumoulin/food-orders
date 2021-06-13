@@ -26,7 +26,7 @@ export const MyAccountPage = ({ children }) => {
                 return;
             }
             // eslint-disable-next-line
-            amazon.Login.retrieveToken(response.code, () => {
+            amazon.Login.retrieveToken(response.code, (response) => {
                 if (response.error) {
                     alert("oauth error " + response.error);
                     return;
