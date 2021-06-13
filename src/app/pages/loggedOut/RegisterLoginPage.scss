@@ -5,7 +5,7 @@
         margin-bottom: 20px;
     }
     & .register,
-    .login {
+    & .login {
         display: none;
         &.show {
             display: block;
@@ -17,6 +17,9 @@
             & .form-title {
                 padding: 10px 20px;
                 border-bottom: 2px solid $color-black;
+                & h5 {
+                    margin-bottom: 0;
+                }
             }
             & .register-type-selector {
                 padding: 20px 20px 0;
@@ -26,8 +29,8 @@
                 margin-bottom: 0;
             }
             & .register-form--user,
-            .register-form--restaurant,
-            .login-form {
+            & .register-form--restaurant,
+            & .login-form {
                 padding: 20px;
             }
         }

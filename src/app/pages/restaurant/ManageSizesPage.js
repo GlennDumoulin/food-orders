@@ -104,7 +104,7 @@ export const ManageSizesPage = ({ children }) => {
         };
 
         // Stop listening to changes
-        return unsubscribe;
+        return unsubscribe();
     }, [db, restaurantId]);
 
     return (

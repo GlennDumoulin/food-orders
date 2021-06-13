@@ -3,8 +3,7 @@
 .page--my-overview {
     & .restaurants-list,
     & .orders-list {
-        margin-top: 10px;
-        margin-bottom: 30px;
+        margin-top: 10px 0;
     }
     & .restaurants-list {
         &--item {

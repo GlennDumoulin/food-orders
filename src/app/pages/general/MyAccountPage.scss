@@ -1,15 +1,28 @@
 .page--my-account {
-    & .btns-container {
-        & #LoginWithAmazon {
-            display: block;
-            width: 234px;
-            height: 48px;
+    & .alexa-msg {
+        margin-top: 20px;
+        & + .btns-container {
             margin-top: 10px;
-            &:hover {
-                cursor: pointer;
-            }
+        }
+    }
+    & .btns-container {
+        margin-top: 20px;
+        & #LoginWithAmazon,
+        & #Logout {
+            margin-top: 10px;
             @media (min-width: 768px) {
                 margin-top: 0;
+                float: right;
+            }
+        }
+        & #LoginWithAmazon {
+            width: 156px;
+            height: 32px;
+            padding: 0;
+            background-color: transparent;
+            @media (min-width: 768px) {
+                width: 234px;
+                height: 48px;
             }
         }
     }
