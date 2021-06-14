@@ -164,13 +164,14 @@ export const MyAccountPage = ({ children }) => {
                                     for the skill called Food Orders.
                                 </li>
                                 <li>
-                                    Then you have to open the settings and link
-                                    your account.
+                                    Then you have to open the settings, link
+                                    your account and enable the permissions.
                                 </li>
                                 <li>
                                     After you linked your account to the skill
-                                    click the login with Amazon button below and
-                                    complete the login.
+                                    and enabled the permissions, click the login
+                                    with Amazon button below and complete the
+                                    login.
                                 </li>
                             </ol>
                             <p>
@@ -190,7 +191,8 @@ export const MyAccountPage = ({ children }) => {
                         </div>
                         {type === "user" && (
                             <div className="col-12 col-md-6">
-                                {currentUser.accessToken === "" ? (
+                                {currentUser.amazonInfo.name === "" &&
+                                currentUser.amazonInfo.email === "" ? (
                                     <button
                                         type="button"
                                         id="LoginWithAmazon"
