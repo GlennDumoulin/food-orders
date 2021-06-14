@@ -50,7 +50,10 @@ const FirestoreProvider = ({ children }) => {
             .set({
                 name: name,
                 email: email,
-                accessToken: "",
+                amazonInfo: {
+                    name: "",
+                    email: "",
+                },
                 isAdmin: false,
             })
             .then((docRef) => {
@@ -59,17 +62,17 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
-     * Update access token of a user in Firestore
+     * Update Amazon info of a user in Firestore
      * @param {Id} id
-     * @param {String} accesToken
+     * @param {String} amazonInfo
      * @returns null|error
      */
-    const updateUserAccessToken = async (id, accesToken) => {
+    const updateUserAmazonInfo = async (id, amazonInfo) => {
         const userRef = db.collection("users").doc(id);
 
         return userRef
             .update({
-                accessToken: accesToken,
+                amazonInfo: amazonInfo,
             })
             .then((docRef) => {
                 return null;
@@ -772,7 +775,7 @@ const FirestoreProvider = ({ children }) => {
     const value = {
         getUserById,
         addUser,
-        updateUserAccessToken,
+        updateUserAmazonInfo,
         getRestaurants,
         getRestaurantById,
         getRecentRestaurants,

@@ -11,7 +11,7 @@ export const MyAccountPage = ({ children }) => {
     const {
         getUserById,
         getRestaurantById,
-        updateUserAccessToken,
+        updateUserAmazonInfo,
         type,
         user,
         loading,
@@ -22,15 +22,18 @@ export const MyAccountPage = ({ children }) => {
 
     // Handle login with Amazon
     const handleLWA = () => {
-        let options = {};
-        options.scope = "profile";
-        options.pkce = true;
+        let options = {
+            scope: "profile",
+            pkce: true,
+        };
+
         // eslint-disable-next-line
         amazon.Login.authorize(options, (response) => {
             if (response.error) {
                 alert("oauth error " + response.error);
                 return;
             }
+
             // eslint-disable-next-line
             amazon.Login.retrieveToken(response.code, async (response) => {
                 if (response.error) {
@@ -38,12 +41,30 @@ export const MyAccountPage = ({ children }) => {
                     return;
                 }
 
-                // Add Amazon access token of a user to FireStore
-                await updateUserAccessToken(user.uid, response.access_token);
+                // eslint-disable-next-line
+                amazon.Login.retrieveProfile(
+                    response.access_token,
+                    async (response) => {
+                        alert("Hello, " + response.profile.Name);
+                        alert(
+                            "Your e-mail address is " +
+                                response.profile.PrimaryEmail
+                        );
 
-                // Get updated user from Firestore and set current user
-                const updatedUser = await getUserById(user.uid);
-                setCurrentUser(updatedUser);
+                        // Set Amazon info
+                        const amazonInfo = {
+                            name: response.profile.Name,
+                            email: response.profile.PrimaryEmail,
+                        };
+
+                        // Add Amazon info of a user to FireStore
+                        await updateUserAmazonInfo(user.uid, amazonInfo);
+
+                        // Get updated user from Firestore and set current user
+                        const updatedUser = await getUserById(user.uid);
+                        setCurrentUser(updatedUser);
+                    }
+                );
             });
             return false;
         });
@@ -54,8 +75,14 @@ export const MyAccountPage = ({ children }) => {
         // eslint-disable-next-line
         amazon.Login.logout();
 
-        // Delete Amazon access token of a user from FireStore
-        await updateUserAccessToken(user.uid, "");
+        // Set Amazon info
+        const amazonInfo = {
+            name: "",
+            email: "",
+        };
+
+        // Delete Amazon info of a user from FireStore
+        await updateUserAmazonInfo(user.uid, amazonInfo);
 
         // Get updated user from Firestore and set current user
         const updatedUser = await getUserById(user.uid);
