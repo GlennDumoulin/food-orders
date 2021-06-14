@@ -20,7 +20,7 @@ FoodOrders is mijn eindwerk voor het Graduaat Programmeren uit de Arteveldehoges
 
 ## Links
 
-[GitHub repo](https://github.com/glendumo/food-orders)/s/s
+[GitHub repo](https://github.com/glendumo/food-orders)\s\s
 [FoodOrders](https://food-orders.netlify.app) (hosted on Netlify)
 
 ## Accounts
