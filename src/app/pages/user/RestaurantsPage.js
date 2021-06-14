@@ -9,7 +9,7 @@ import "./RestaurantsPage.scss";
 // Page content
 export const RestaurantsPage = ({ children }) => {
     // Defining variables and states
-    const { getRestaurants } = useFirestore();
+    const { getAvailableRestaurants } = useFirestore();
 
     const [restaurants, setRestaurants] = useState();
 
@@ -17,7 +17,7 @@ export const RestaurantsPage = ({ children }) => {
     useEffect(() => {
         const unsubscribe = () => {
             const handleGetRestaurants = async () => {
-                const restaurants = await getRestaurants();
+                const restaurants = await getAvailableRestaurants();
 
                 setRestaurants(restaurants);
             };
@@ -27,7 +27,7 @@ export const RestaurantsPage = ({ children }) => {
 
         // Stop listening to changes
         return unsubscribe();
-    }, [getRestaurants]);
+    }, [getAvailableRestaurants]);
 
     return (
         <div className="page page--restaurants">

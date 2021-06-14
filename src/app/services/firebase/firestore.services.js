@@ -79,8 +79,8 @@ const FirestoreProvider = ({ children }) => {
             });
     };
 
-    // Get all available restaurants
-    const getRestaurants = async () => {
+    // Get all available restaurants from Firestore
+    const getAvailableRestaurants = async () => {
         const query = db
             .collection("restaurants")
             .where("acceptingOrders", "==", true);
@@ -554,7 +554,7 @@ const FirestoreProvider = ({ children }) => {
                 ...doc.data(),
             };
         });
-        return order;
+        return order[0];
     };
 
     /**
@@ -776,7 +776,7 @@ const FirestoreProvider = ({ children }) => {
         getUserById,
         addUser,
         updateUserAmazonInfo,
-        getRestaurants,
+        getAvailableRestaurants,
         getRestaurantById,
         getRecentRestaurants,
         addRestaurant,

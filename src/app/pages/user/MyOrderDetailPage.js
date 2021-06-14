@@ -106,7 +106,7 @@ export const MyOrderDetailPage = ({ children }) => {
             if (action === "cancel") {
                 // Check if the user already has an order that is not yet placed
                 const currentOrder = await getCurrentOrder(user.uid);
-                if (currentOrder[0]) {
+                if (currentOrder) {
                     setCancelOrderError(
                         "You already have an order that is not yet placed. Please place or delete that order before cancelling this one."
                     );
@@ -165,14 +165,16 @@ export const MyOrderDetailPage = ({ children }) => {
 
             // Calculate the total price of the order
             let orderTotal = 0;
-            order.orderContent.forEach(async (item) => {
-                const price = await getPriceById(item.priceId);
+            if (order) {
+                order.orderContent.forEach(async (item) => {
+                    const price = await getPriceById(item.priceId);
 
-                const itemPrice = price.price * item.amount;
+                    const itemPrice = price.price * item.amount;
 
-                orderTotal += itemPrice;
-                setTotalPrice(orderTotal.toFixed(2));
-            });
+                    orderTotal += itemPrice;
+                    setTotalPrice(orderTotal.toFixed(2));
+                });
+            }
 
             // Set a warning when the restaurant is not accepting orders
             if (!restaurant.acceptingOrders) {

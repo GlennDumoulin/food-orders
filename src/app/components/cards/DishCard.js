@@ -176,7 +176,7 @@ const DishCard = ({ dish, restaurant }) => {
 
                 // Set current prices and order
                 setPrices(prices);
-                setOrder(order[0]);
+                setOrder(order);
                 setLoadingData(false);
             };
 
