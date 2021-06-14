@@ -30,8 +30,12 @@ const DishCard = ({ dish, restaurant }) => {
 
     // Handle opening a dish popup & disable scrolling
     const handlePopup = async () => {
+        // Get the latest update of the current order from Firestore
+        const currentOrder = await getCurrentOrder(user.uid);
+        setOrder(currentOrder);
+
         // Set error message if current order is from a different restaurant
-        if (order && order.restaurantId !== restaurant.id) {
+        if (currentOrder && currentOrder.restaurantId !== restaurant.id) {
             setOrderError(
                 "Adding this item will delete your current order and start a new one for this restaurant."
             );
@@ -185,7 +189,7 @@ const DishCard = ({ dish, restaurant }) => {
 
         // Stop listening to changes
         return unsubscribe();
-    }, [getPricesByDishId, dish, getCurrentOrder, loading, user, restaurant]);
+    }, [getPricesByDishId, dish, getCurrentOrder, loading, user]);
 
     // Set first option of each select as selected
     if (!loadingData) {
