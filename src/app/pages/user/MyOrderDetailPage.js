@@ -25,9 +25,11 @@ export const MyOrderDetailPage = ({ children }) => {
     const {
         getRestaurantById,
         getPriceById,
+        getCurrentOrder,
         updateOrderStatus,
         updateOrderPickup,
         deleteOrder,
+        user,
     } = useFirestore();
 
     const [order, setOrder] = useState();
@@ -102,16 +104,24 @@ export const MyOrderDetailPage = ({ children }) => {
                 window.location.assign(Routes.MY_ORDERS);
             }
             if (action === "cancel") {
-                // Update status of current order in Firestore
-                await updateOrderStatus(order.id, "Not yet placed");
+                // Check if the user already has an order that is not yet placed
+                const currentOrder = await getCurrentOrder(user.uid);
+                if (currentOrder[0]) {
+                    setCancelOrderError(
+                        "You already have an order that is not yet placed. Please place or delete that order before cancelling this one."
+                    );
+                } else {
+                    // Update status of current order in Firestore
+                    await updateOrderStatus(order.id, "Not yet placed");
 
-                // Close the popup & enable scrolling
-                const popup = document.getElementById("place-order");
-                popup.classList.add("hidden");
+                    // Close the popup & enable scrolling
+                    const popup = document.getElementById("cancel-order");
+                    popup.classList.add("hidden");
 
-                const body = document.body;
-                body.style.overflowX = "hidden";
-                body.style.overflowY = "auto";
+                    const body = document.body;
+                    body.style.overflowX = "hidden";
+                    body.style.overflowY = "auto";
+                }
             }
         } catch (error) {
             if (action === "place") setPlaceOrderError(error.message);

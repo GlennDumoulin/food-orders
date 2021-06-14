@@ -1,5 +1,6 @@
 // Imports
 import React, { useState, useEffect, Fragment } from "react";
+import * as Feather from "react-feather";
 
 import { useFirestore } from "../../services";
 
@@ -19,9 +20,14 @@ export const MyAccountPage = ({ children }) => {
 
     const [currentUser, setCurrentUser] = useState();
     const [loadingUser, setLoadingUser] = useState(true);
+    const [amazonError, setAmazonError] = useState("");
 
     // Handle login with Amazon
     const handleLWA = () => {
+        // Remove Amazon error
+        setAmazonError("");
+
+        // Set authorization options
         let options = {
             scope: "profile",
             pkce: true,
@@ -30,14 +36,14 @@ export const MyAccountPage = ({ children }) => {
         // eslint-disable-next-line
         amazon.Login.authorize(options, (response) => {
             if (response.error) {
-                alert("oauth error " + response.error);
+                setAmazonError(response.error);
                 return;
             }
 
             // eslint-disable-next-line
             amazon.Login.retrieveToken(response.code, async (response) => {
                 if (response.error) {
-                    alert("oauth error " + response.error);
+                    setAmazonError(response.error);
                     return;
                 }
 
@@ -45,12 +51,6 @@ export const MyAccountPage = ({ children }) => {
                 amazon.Login.retrieveProfile(
                     response.access_token,
                     async (response) => {
-                        alert("Hello, " + response.profile.Name);
-                        alert(
-                            "Your e-mail address is " +
-                                response.profile.PrimaryEmail
-                        );
-
                         // Set Amazon info
                         const amazonInfo = {
                             name: response.profile.Name,
@@ -190,29 +190,39 @@ export const MyAccountPage = ({ children }) => {
                             </button>
                         </div>
                         {type === "user" && (
-                            <div className="col-12 col-md-6">
-                                {currentUser.amazonInfo.name === "" &&
-                                currentUser.amazonInfo.email === "" ? (
-                                    <button
-                                        type="button"
-                                        id="LoginWithAmazon"
-                                        onClick={handleLWA}
-                                    >
-                                        <img
-                                            src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_312x64.png"
-                                            alt="Login with Amazon"
-                                        />
-                                    </button>
+                            <Fragment>
+                                <div className="col-12 col-md-6">
+                                    {currentUser.amazonInfo.name === "" &&
+                                    currentUser.amazonInfo.email === "" ? (
+                                        <button
+                                            type="button"
+                                            id="LoginWithAmazon"
+                                            onClick={handleLWA}
+                                        >
+                                            <img
+                                                src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gold_312x64.png"
+                                                alt="Login with Amazon"
+                                            />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            type="button"
+                                            id="Logout"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
+                                    )}
+                                </div>
+                                <span className="error"></span>
+                                {amazonError ? (
+                                    <span className="error">
+                                        <Feather.AlertCircle /> {amazonError}
+                                    </span>
                                 ) : (
-                                    <button
-                                        type="button"
-                                        id="Logout"
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </button>
+                                    ""
                                 )}
-                            </div>
+                            </Fragment>
                         )}
                     </div>
                 </Fragment>
