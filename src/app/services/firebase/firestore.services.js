@@ -177,6 +177,24 @@ const FirestoreProvider = ({ children }) => {
     };
 
     /**
+     * Update availability of a restaurant in Firestore
+     * @param {Id} id
+     * @param {Boolean} available
+     * @returns null|error
+     */
+    const updateRestaurantAvailability = async (id, available) => {
+        const restaurantRef = db.collection("restaurants").doc(id);
+
+        return restaurantRef
+            .update({
+                acceptingOrders: available,
+            })
+            .then((docRef) => {
+                return null;
+            });
+    };
+
+    /**
      * Get size by id from Firestore
      * @param {Id} id
      * @returns size|error
@@ -780,6 +798,7 @@ const FirestoreProvider = ({ children }) => {
         getRestaurantById,
         getRecentRestaurants,
         addRestaurant,
+        updateRestaurantAvailability,
         getSizeById,
         getSizesByRestaurant,
         addSize,
